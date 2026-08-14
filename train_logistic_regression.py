@@ -1,0 +1,125 @@
+from __future__ import annotations
+
+import argparse
+from pathlib import Path
+
+from heart_model import (
+    BEST_MODEL_NAME,
+    FINAL_LOGISTIC_VARIANT,
+    LOGISTIC_MODEL_NAME,
+    dataset_analysis,
+    load_dataset,
+    logistic_regression_coefficients,
+    metrics_to_table,
+    save_artifacts,
+    train_models,
+)
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Train and evaluate heart disease prediction models."
+    )
+    parser.add_argument(
+        "--csv",
+        type=str,
+        default=None,
+        help="Optional local CSV path. If omitted, the dataset is downloaded with KaggleHub.",
+    )
+    parser.add_argument(
+        "--output",
+        type=str,
+        default="artifacts",
+        help="Folder used to save trained models and metrics.",
+    )
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    df = load_dataset(args.csv)
+    analysis = dataset_analysis(df)
+
+    print("=" * 72)
+    print("HEART DISEASE PREDICTION - LOGISTIC REGRESSION")
+    print("=" * 72)
+    print()
+
+    print("1. DATASET ANALYSIS")
+    print("-" * 72)
+    print(f"Raw dataset: {analysis['raw_rows']} samples, {analysis['columns']} columns")
+    print(
+        "Class balance: "
+        f"{analysis['raw_no_heart_disease']} no heart disease "
+        f"({analysis['raw_no_heart_disease_percent']:.2f}%), "
+        f"{analysis['raw_heart_disease']} heart disease "
+        f"({analysis['raw_heart_disease_percent']:.2f}%)"
+    )
+    print(
+        f"Duplicate rows removed: {analysis['duplicates']} "
+        f"-> final cleaned samples: {analysis['deduplicated_rows']}"
+    )
+    print(
+        "Cleaned class count: "
+        f"{analysis['deduplicated_no_heart_disease']} no heart disease, "
+        f"{analysis['deduplicated_heart_disease']} heart disease"
+    )
+    print()
+
+    print("2. PREPROCESSING")
+    print("-" * 72)
+    print("Duplicate removal -> 80/20 train-test split -> scaling + one-hot encoding")
+    print(f"Final model: {FINAL_LOGISTIC_VARIANT} (C=0.3, L1 regularization)")
+    print()
+
+    models, metrics, _, _ = train_models(df, selected_models=[LOGISTIC_MODEL_NAME])
+    comparison = metrics_to_table(metrics)
+
+    print("3. FINAL RESULT")
+    print("-" * 72)
+    print(comparison.to_string(index=False))
+
+    logistic_metrics = metrics[LOGISTIC_MODEL_NAME]
+    print()
+    print(f"Accuracy : {logistic_metrics['accuracy']:.4f}")
+    print(f"Precision: {logistic_metrics['precision']:.4f}")
+    print(f"Recall   : {logistic_metrics['recall']:.4f}")
+    print(f"F1-score : {logistic_metrics['f1_score']:.4f}")
+    print(f"Backend prototype model: {BEST_MODEL_NAME}")
+    print()
+    tn, fp = logistic_metrics["confusion_matrix"][0]
+    fn, tp = logistic_metrics["confusion_matrix"][1]
+    print("Confusion matrix:")
+    print(f"True Negative  (correct no heart disease): {tn}")
+    print(f"False Positive (predicted disease wrongly): {fp}")
+    print(f"False Negative (missed heart disease): {fn}")
+    print(f"True Positive  (correct heart disease): {tp}")
+    print()
+
+    print("4. TOP INFLUENTIAL FEATURES")
+    print("-" * 72)
+    print("Sorted from strongest to weakest effect.")
+    print("Positive direction = increases heart disease probability.")
+    print("Negative direction = decreases heart disease probability.")
+    print()
+    coefficients = logistic_regression_coefficients(models[LOGISTIC_MODEL_NAME])
+    print(f"{'No.':<4} {'Feature':<52} {'Direction':<25} {'Coef.':>8}")
+    print("-" * 96)
+    for row_number, row in enumerate(coefficients.head(8).itertuples(), start=1):
+        direction = (
+            "Toward disease"
+            if row.Direction == "Toward heart disease"
+            else "Toward no disease"
+        )
+        print(f"{row_number:<4} {row.Feature:<52} {direction:<25} {row.Coefficient:>8.4f}")
+    print()
+
+    save_artifacts(models, metrics, Path(args.output))
+    print("5. OUTPUT")
+    print("-" * 72)
+    print(f"Artifacts saved to: {Path(args.output).resolve()}")
+    print("Run prototype: python -m streamlit run app.py")
+
+
+if __name__ == "__main__":
+    main()

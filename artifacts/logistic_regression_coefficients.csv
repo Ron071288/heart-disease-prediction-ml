@@ -1,0 +1,34 @@
+Raw Feature,Feature,Direction,Coefficient
+categorical__thal_3,Thalassemia Result = 3 (Reversible defect),Toward no heart disease,-1.3344562878177433
+categorical__cp_0,Chest Pain Type = 0 (Typical angina),Toward no heart disease,-0.892361128909414
+categorical__cp_3,Chest Pain Type = 3 (Asymptomatic),Toward heart disease,0.8092116844680365
+categorical__slope_2,ST Slope = 2 (Downsloping),Toward heart disease,0.7550910426474502
+categorical__thal_2,Thalassemia Result = 2 (Normal),Toward heart disease,0.6959624872071837
+categorical__restecg_1,Resting ECG Result = 1 (ST-T wave abnormality),Toward heart disease,0.4997537215648463
+categorical__slope_1,ST Slope = 1 (Flat),Toward no heart disease,-0.3968586474019242
+categorical__restecg_0,Resting ECG Result = 0 (Normal),Toward no heart disease,-0.29124222345901873
+categorical__thal_7,Thalassemia Result = 7,Toward heart disease,0.2214747763071986
+categorical__ca_0,Number of Major Vessels = 0,Toward heart disease,0.1699370845470357
+categorical__exang_0,Exercise-Induced Angina = 0 (No),Toward heart disease,0.08950178706490643
+numeric__chol,Cholesterol,Toward heart disease,0.05342681109791304
+categorical__cp_2,Chest Pain Type = 2 (Non-anginal pain),Toward heart disease,0.02758981674604931
+categorical__fbs_0,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl),Toward no heart disease,0.0
+categorical__ca_1,Number of Major Vessels = 1,Toward no heart disease,0.0
+categorical__thal_6,Thalassemia Result = 6,Toward no heart disease,0.0
+numeric__thalachh,Maximum Heart Rate,Toward no heart disease,0.0
+categorical__thal_1,Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__thal_0,Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__ca_4,Number of Major Vessels = 4,Toward no heart disease,0.0
+categorical__ca_3,Number of Major Vessels = 3,Toward no heart disease,0.0
+categorical__ca_2,Number of Major Vessels = 2,Toward no heart disease,0.0
+numeric__oldpeak,Oldpeak,Toward no heart disease,0.0
+categorical__fbs_1,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl),Toward no heart disease,0.0
+categorical__slope_3,ST Slope = 3,Toward no heart disease,0.0
+categorical__sex_0,Sex = 0 (Female),Toward no heart disease,0.0
+categorical__sex_1,Sex = 1 (Male),Toward no heart disease,0.0
+categorical__slope_0,ST Slope = 0 (Upsloping),Toward no heart disease,0.0
+categorical__exang_1,Exercise-Induced Angina = 1 (Yes),Toward no heart disease,0.0
+numeric__trestbps,Resting Blood Pressure,Toward no heart disease,0.0
+categorical__restecg_2,Resting ECG Result = 2 (Left ventricular hypertrophy),Toward no heart disease,0.0
+categorical__cp_1,Chest Pain Type = 1 (Atypical angina),Toward no heart disease,0.0
+numeric__age,Age,Toward no heart disease,0.0
