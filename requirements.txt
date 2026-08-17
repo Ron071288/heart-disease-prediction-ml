@@ -4,4 +4,4 @@ scikit-learn
 joblib
 kagglehub[pandas-datasets]
 streamlit
-
+matplotlib

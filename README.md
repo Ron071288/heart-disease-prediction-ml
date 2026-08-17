@@ -39,6 +39,7 @@ Saved outputs:
 - `artifacts/model_comparison.csv`
 - `artifacts/metrics.json`
 - trained `.joblib` model file
+- chart images for model performance, confusion matrix, and influential features
 
 ## Run Prototype
 

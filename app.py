@@ -12,6 +12,11 @@ from heart_model import (
     metrics_to_table,
     train_models,
 )
+from heart_visuals import (
+    create_confusion_matrix_chart,
+    create_feature_coefficient_chart,
+    create_metrics_chart,
+)
 
 
 DISPLAY_LABELS = {
@@ -170,15 +175,40 @@ metric_columns[3].metric(
 )
 
 metric_table = metrics_to_table(metrics)
-st.write("Backend model performance")
-st.dataframe(metric_table, use_container_width=True)
-
-st.write("Top Logistic Regression factors")
+logistic_metrics = metrics[LOGISTIC_MODEL_NAME]
 coefficient_table = logistic_regression_coefficients(models[LOGISTIC_MODEL_NAME])
-st.dataframe(
-    coefficient_table[["Feature", "Direction", "Coefficient"]].head(8),
-    use_container_width=True,
-)
+
+st.write("Backend model performance")
+score_columns = st.columns(4)
+score_columns[0].metric("Accuracy", f"{logistic_metrics['accuracy']:.2%}")
+score_columns[1].metric("Precision", f"{logistic_metrics['precision']:.2%}")
+score_columns[2].metric("Recall", f"{logistic_metrics['recall']:.2%}")
+score_columns[3].metric("F1-score", f"{logistic_metrics['f1_score']:.2%}")
+
+chart_tab, table_tab = st.tabs(["Charts", "Tables"])
+
+with chart_tab:
+    left_chart, right_chart = st.columns(2)
+    with left_chart:
+        st.pyplot(create_metrics_chart(metric_table), use_container_width=True)
+    with right_chart:
+        st.pyplot(
+            create_confusion_matrix_chart(logistic_metrics["confusion_matrix"]),
+            use_container_width=True,
+        )
+    st.pyplot(
+        create_feature_coefficient_chart(coefficient_table),
+        use_container_width=True,
+    )
+
+with table_tab:
+    st.write("Model performance table")
+    st.dataframe(metric_table, use_container_width=True)
+    st.write("Top Logistic Regression factors")
+    st.dataframe(
+        coefficient_table[["Feature", "Direction", "Coefficient"]].head(8),
+        use_container_width=True,
+    )
 
 patient_input = user_input_form(df)
 

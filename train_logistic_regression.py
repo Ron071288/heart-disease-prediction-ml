@@ -14,6 +14,7 @@ from heart_model import (
     save_artifacts,
     train_models,
 )
+from heart_visuals import save_visualizations
 
 
 def parse_args() -> argparse.Namespace:
@@ -114,10 +115,21 @@ def main() -> None:
         print(f"{row_number:<4} {row.Feature:<52} {direction:<25} {row.Coefficient:>8.4f}")
     print()
 
-    save_artifacts(models, metrics, Path(args.output))
+    output_dir = Path(args.output)
+    save_artifacts(models, metrics, output_dir)
+    save_visualizations(
+        comparison,
+        logistic_metrics["confusion_matrix"],
+        coefficients,
+        output_dir,
+    )
     print("5. OUTPUT")
     print("-" * 72)
-    print(f"Artifacts saved to: {Path(args.output).resolve()}")
+    print(f"Artifacts saved to: {output_dir.resolve()}")
+    print("Charts saved:")
+    print("- metrics_chart.png")
+    print("- confusion_matrix.png")
+    print("- feature_coefficients.png")
     print("Run prototype: python -m streamlit run app.py")
 
 
