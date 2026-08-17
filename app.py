@@ -136,7 +136,7 @@ def user_input_form(df: pd.DataFrame) -> pd.DataFrame:
 
 
 st.title("Heart Disease Prediction")
-st.caption("Ron Phua Jun Long - Logistic Regression Backend Prototype")
+st.caption("Logistic Regression Backend Prototype")
 
 with st.sidebar:
     st.header("Dataset")
@@ -147,14 +147,6 @@ with st.sidebar:
     )
     csv_path = local_csv.strip() or None
 
-    st.header("Model")
-    selected_frontend_model = st.selectbox(
-        "Frontend model selection",
-        options=FRONTEND_MODEL_OPTIONS,
-        help="The frontend can show all group models. The backend currently uses the best trained model.",
-    )
-    st.write(f"Backend prediction model: {BEST_MODEL_NAME}")
-
 try:
     df = get_dataset(csv_path)
     models, metrics, _, _ = get_trained_models(csv_path)
@@ -163,52 +155,20 @@ except Exception as exc:
     st.stop()
 
 analysis = dataset_analysis(df)
-st.write("Dataset analysis")
-metric_columns = st.columns(4)
-metric_columns[0].metric("Raw samples", analysis["raw_rows"])
-metric_columns[1].metric("Duplicates removed", analysis["duplicates"])
-metric_columns[2].metric("Cleaned samples", analysis["deduplicated_rows"])
-metric_columns[3].metric(
-    "Cleaned class balance",
-    f"{analysis['deduplicated_no_heart_disease']} / {analysis['deduplicated_heart_disease']}",
-    help="No heart disease / Heart disease",
-)
-
 metric_table = metrics_to_table(metrics)
 logistic_metrics = metrics[LOGISTIC_MODEL_NAME]
 coefficient_table = logistic_regression_coefficients(models[LOGISTIC_MODEL_NAME])
 
-st.write("Backend model performance")
-score_columns = st.columns(4)
-score_columns[0].metric("Accuracy", f"{logistic_metrics['accuracy']:.2%}")
-score_columns[1].metric("Precision", f"{logistic_metrics['precision']:.2%}")
-score_columns[2].metric("Recall", f"{logistic_metrics['recall']:.2%}")
-score_columns[3].metric("F1-score", f"{logistic_metrics['f1_score']:.2%}")
-
-chart_tab, table_tab = st.tabs(["Charts", "Tables"])
-
-with chart_tab:
-    left_chart, right_chart = st.columns(2)
-    with left_chart:
-        st.pyplot(create_metrics_chart(metric_table), use_container_width=True)
-    with right_chart:
-        st.pyplot(
-            create_confusion_matrix_chart(logistic_metrics["confusion_matrix"]),
-            use_container_width=True,
-        )
-    st.pyplot(
-        create_feature_coefficient_chart(coefficient_table),
-        use_container_width=True,
+st.subheader("Prediction")
+model_column, backend_column = st.columns(2)
+with model_column:
+    selected_frontend_model = st.selectbox(
+        "Select model",
+        options=FRONTEND_MODEL_OPTIONS,
+        help="The frontend is prepared for all group models. The current backend uses Logistic Regression.",
     )
-
-with table_tab:
-    st.write("Model performance table")
-    st.dataframe(metric_table, use_container_width=True)
-    st.write("Top Logistic Regression factors")
-    st.dataframe(
-        coefficient_table[["Feature", "Direction", "Coefficient"]].head(8),
-        use_container_width=True,
-    )
+with backend_column:
+    st.text_input("Backend model currently connected", value=BEST_MODEL_NAME, disabled=True)
 
 patient_input = user_input_form(df)
 
@@ -232,7 +192,41 @@ if st.button("Predict Heart Disease", type="primary"):
     st.write("Frontend selected model:", selected_frontend_model)
     st.write("Backend prediction model:", BEST_MODEL_NAME)
     st.write("Patient input")
-    st.dataframe(patient_input, use_container_width=True)
+    st.dataframe(patient_input, width="stretch")
+
+st.divider()
+
+with st.expander("Model Analysis and Charts", expanded=False):
+    st.write("Dataset analysis")
+    metric_columns = st.columns(4)
+    metric_columns[0].metric("Raw samples", analysis["raw_rows"])
+    metric_columns[1].metric("Duplicates removed", analysis["duplicates"])
+    metric_columns[2].metric("Cleaned samples", analysis["deduplicated_rows"])
+    metric_columns[3].metric(
+        "Cleaned class balance",
+        f"{analysis['deduplicated_no_heart_disease']} / {analysis['deduplicated_heart_disease']}",
+        help="No heart disease / Heart disease",
+    )
+
+    st.write("Backend model performance")
+    score_columns = st.columns(4)
+    score_columns[0].metric("Accuracy", f"{logistic_metrics['accuracy']:.2%}")
+    score_columns[1].metric("Precision", f"{logistic_metrics['precision']:.2%}")
+    score_columns[2].metric("Recall", f"{logistic_metrics['recall']:.2%}")
+    score_columns[3].metric("F1-score", f"{logistic_metrics['f1_score']:.2%}")
+
+    left_chart, right_chart = st.columns(2)
+    with left_chart:
+        st.pyplot(create_metrics_chart(metric_table), width="stretch")
+    with right_chart:
+        st.pyplot(
+            create_confusion_matrix_chart(logistic_metrics["confusion_matrix"]),
+            width="stretch",
+        )
+    st.pyplot(
+        create_feature_coefficient_chart(coefficient_table),
+        width="stretch",
+    )
 
 st.caption(
     "This prototype is for academic demonstration only and is not a medical diagnosis tool."
