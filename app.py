@@ -5,6 +5,7 @@ import streamlit as st
 
 from heart_model import (
     BEST_MODEL_NAME,
+    FINAL_LOGISTIC_VARIANT,
     LOGISTIC_MODEL_NAME,
     dataset_analysis,
     load_dataset,
@@ -136,7 +137,7 @@ def user_input_form(df: pd.DataFrame) -> pd.DataFrame:
 
 
 st.title("Heart Disease Prediction")
-st.caption("Logistic Regression Backend Prototype")
+st.caption("Logistic Regression Backend Prototype with Interaction Features")
 
 with st.sidebar:
     st.header("Dataset")
@@ -165,10 +166,10 @@ with model_column:
     selected_frontend_model = st.selectbox(
         "Select model",
         options=FRONTEND_MODEL_OPTIONS,
-        help="The frontend is prepared for all group models. The current backend uses Logistic Regression.",
+        help="The frontend is prepared for all group models. The current backend uses Logistic Regression with interaction features.",
     )
 with backend_column:
-    st.text_input("Backend model currently connected", value=BEST_MODEL_NAME, disabled=True)
+    st.text_input("Backend model currently connected", value=FINAL_LOGISTIC_VARIANT, disabled=True)
 
 patient_input = user_input_form(df)
 
@@ -190,7 +191,7 @@ if st.button("Predict Heart Disease", type="primary"):
         st.info(probability_text)
 
     st.write("Frontend selected model:", selected_frontend_model)
-    st.write("Backend prediction model:", BEST_MODEL_NAME)
+    st.write("Backend prediction model:", FINAL_LOGISTIC_VARIANT)
     st.write("Patient input")
     st.dataframe(patient_input, width="stretch")
 
@@ -200,12 +201,16 @@ with st.expander("Model Analysis and Charts", expanded=False):
     st.write("Dataset analysis")
     metric_columns = st.columns(4)
     metric_columns[0].metric("Raw samples", analysis["raw_rows"])
-    metric_columns[1].metric("Duplicates removed", analysis["duplicates"])
-    metric_columns[2].metric("Cleaned samples", analysis["deduplicated_rows"])
+    metric_columns[1].metric("Duplicate rows found", analysis["duplicates"])
+    metric_columns[2].metric("Unique rows", analysis["deduplicated_rows"])
     metric_columns[3].metric(
-        "Cleaned class balance",
-        f"{analysis['deduplicated_no_heart_disease']} / {analysis['deduplicated_heart_disease']}",
+        "Raw class balance",
+        f"{analysis['raw_no_heart_disease']} / {analysis['raw_heart_disease']}",
         help="No heart disease / Heart disease",
+    )
+    st.caption(
+        "The interaction-feature backend uses the Kaggle-provided dataset after validation, "
+        "so the model can learn combined feature patterns."
     )
 
     st.write("Backend model performance")

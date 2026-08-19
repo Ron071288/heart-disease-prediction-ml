@@ -1,6 +1,6 @@
 # Heart Disease Prediction
 
-This folder contains the Logistic Regression model implementation and a simple Streamlit prototype for the group demo.
+This folder contains the Logistic Regression model implementation with interaction-feature engineering and a simple Streamlit prototype for the group demo.
 
 ## Dataset
 
@@ -32,7 +32,7 @@ Or use a local CSV:
 python train_logistic_regression.py --csv /path/to/heart.csv
 ```
 
-The script uses an 80% training and 20% testing split. The current backend implementation trains and evaluates Logistic Regression. KNN and Random Forest can be added later by other group members using the same dataset, preprocessing flow, and evaluation metrics.
+The script uses an 80% training and 20% testing split. The current backend implementation trains and evaluates Logistic Regression with interaction features. KNN and Random Forest can be added later by other group members using the same dataset, preprocessing flow, and evaluation metrics.
 
 Saved outputs:
 
@@ -47,7 +47,7 @@ Saved outputs:
 streamlit run app.py
 ```
 
-The prototype lets the user choose a model option, enter patient details, and view the prediction result. At this stage, the backend prediction uses the trained Logistic Regression model. After integration, the selected frontend model can be connected to each group member's backend model.
+The prototype lets the user choose a model option, enter patient details, and view the prediction result. At this stage, the backend prediction uses the trained Logistic Regression interaction-feature model. After integration, the selected frontend model can be connected to each group member's backend model.
 
 ## Logistic Regression Explanation
 
@@ -56,4 +56,5 @@ Logistic Regression can be explained as:
 - A supervised binary classification model.
 - Suitable because the target has two classes: heart disease and no heart disease.
 - Interpretable because it estimates the probability of heart disease.
+- Improved with interaction features, which combine two existing inputs so the model can learn their joint effect.
 - Evaluated using accuracy, precision, recall, F1-score, and confusion matrix.

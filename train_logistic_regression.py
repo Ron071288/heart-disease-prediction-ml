@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import textwrap
 from pathlib import Path
 
 from heart_model import (
@@ -57,20 +58,25 @@ def main() -> None:
         f"({analysis['raw_heart_disease_percent']:.2f}%)"
     )
     print(
-        f"Duplicate rows removed: {analysis['duplicates']} "
-        f"-> final cleaned samples: {analysis['deduplicated_rows']}"
+        f"Duplicate rows identified: {analysis['duplicates']} "
+        f"(unique rows if removed: {analysis['deduplicated_rows']})"
     )
     print(
-        "Cleaned class count: "
+        "Unique-row class count: "
         f"{analysis['deduplicated_no_heart_disease']} no heart disease, "
         f"{analysis['deduplicated_heart_disease']} heart disease"
     )
+    print("Training uses the Kaggle-provided dataset after validation so interaction patterns can be learned.")
     print()
 
     print("2. PREPROCESSING")
     print("-" * 72)
-    print("Duplicate removal -> 80/20 train-test split -> scaling + one-hot encoding")
-    print(f"Final model: {FINAL_LOGISTIC_VARIANT} (C=0.3, L1 regularization)")
+    print(
+        "Data validation -> 80/20 train-test split -> scaling + one-hot encoding "
+        "-> interaction features"
+    )
+    print(f"Final model: {FINAL_LOGISTIC_VARIANT} (C=10, L1 regularization)")
+    print("Interaction features combine two existing inputs so Logistic Regression can learn their joint effect.")
     print()
 
     models, metrics, _, _ = train_models(df, selected_models=[LOGISTIC_MODEL_NAME])
@@ -112,7 +118,8 @@ def main() -> None:
             if row.Direction == "Toward heart disease"
             else "Toward no disease"
         )
-        print(f"{row_number:<4} {row.Feature:<52} {direction:<25} {row.Coefficient:>8.4f}")
+        feature = textwrap.shorten(row.Feature, width=52, placeholder="...")
+        print(f"{row_number:<4} {feature:<52} {direction:<25} {row.Coefficient:>8.4f}")
     print()
 
     output_dir = Path(args.output)

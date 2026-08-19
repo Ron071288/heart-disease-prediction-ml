@@ -1,34 +1,562 @@
 Raw Feature,Feature,Direction,Coefficient
-categorical__thal_3,Thalassemia Result = 3 (Reversible defect),Toward no heart disease,-1.3344562878177433
-categorical__cp_0,Chest Pain Type = 0 (Typical angina),Toward no heart disease,-0.892361128909414
-categorical__cp_3,Chest Pain Type = 3 (Asymptomatic),Toward heart disease,0.8092116844680365
-categorical__slope_2,ST Slope = 2 (Downsloping),Toward heart disease,0.7550910426474502
-categorical__thal_2,Thalassemia Result = 2 (Normal),Toward heart disease,0.6959624872071837
-categorical__restecg_1,Resting ECG Result = 1 (ST-T wave abnormality),Toward heart disease,0.4997537215648463
-categorical__slope_1,ST Slope = 1 (Flat),Toward no heart disease,-0.3968586474019242
-categorical__restecg_0,Resting ECG Result = 0 (Normal),Toward no heart disease,-0.29124222345901873
-categorical__thal_7,Thalassemia Result = 7,Toward heart disease,0.2214747763071986
-categorical__ca_0,Number of Major Vessels = 0,Toward heart disease,0.1699370845470357
-categorical__exang_0,Exercise-Induced Angina = 0 (No),Toward heart disease,0.08950178706490643
-numeric__chol,Cholesterol,Toward heart disease,0.05342681109791304
-categorical__cp_2,Chest Pain Type = 2 (Non-anginal pain),Toward heart disease,0.02758981674604931
-categorical__fbs_0,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl),Toward no heart disease,0.0
-categorical__ca_1,Number of Major Vessels = 1,Toward no heart disease,0.0
-categorical__thal_6,Thalassemia Result = 6,Toward no heart disease,0.0
-numeric__thalachh,Maximum Heart Rate,Toward no heart disease,0.0
-categorical__thal_1,Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
-categorical__thal_0,Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
-categorical__ca_4,Number of Major Vessels = 4,Toward no heart disease,0.0
-categorical__ca_3,Number of Major Vessels = 3,Toward no heart disease,0.0
+categorical__restecg_2 categorical__ca_2,Resting ECG Result = 2 (Left ventricular hypertrophy) x Number of Major Vessels = 2,Toward heart disease,15.330267054538176
+categorical__sex_0 categorical__thal_2,Sex = 0 (Female) x Thalassemia Result = 2 (Normal),Toward heart disease,14.41503928066661
+categorical__cp_0 categorical__thal_7,Chest Pain Type = 0 (Typical angina) x Thalassemia Result = 7,Toward no heart disease,-13.422448191019319
+categorical__cp_3 categorical__thal_7,Chest Pain Type = 3 (Asymptomatic) x Thalassemia Result = 7,Toward heart disease,12.999901879822795
+numeric__trestbps categorical__slope_0,Resting Blood Pressure x ST Slope = 0 (Upsloping),Toward heart disease,11.907724594980943
+categorical__ca_3 categorical__thal_3,Number of Major Vessels = 3 x Thalassemia Result = 3 (Reversible defect),Toward heart disease,11.791083842084698
+categorical__ca_2 categorical__thal_7,Number of Major Vessels = 2 x Thalassemia Result = 7,Toward heart disease,11.410492668098687
+categorical__cp_3 categorical__ca_0,Chest Pain Type = 3 (Asymptomatic) x Number of Major Vessels = 0,Toward no heart disease,-10.024382049755577
+categorical__restecg_2 categorical__exang_0,Resting ECG Result = 2 (Left ventricular hypertrophy) x Exercise-Induced Angina = 0 (No),Toward heart disease,9.963731267423467
+categorical__cp_3 categorical__thal_3,Chest Pain Type = 3 (Asymptomatic) x Thalassemia Result = 3 (Reversible defect),Toward heart disease,8.74304396276643
+numeric__oldpeak categorical__slope_2,Oldpeak x ST Slope = 2 (Downsloping),Toward heart disease,8.597584812171592
+categorical__cp_0 categorical__fbs_1,Chest Pain Type = 0 (Typical angina) x Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl),Toward no heart disease,-8.395175715992764
+categorical__sex_0 categorical__thal_3,Sex = 0 (Female) x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,-8.143787892929792
+numeric__chol categorical__thal_7,Cholesterol x Thalassemia Result = 7,Toward heart disease,7.9654933491231334
+categorical__fbs_1 categorical__ca_2,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl) x Number of Major Vessels = 2,Toward no heart disease,-7.789759038638528
+categorical__slope_1 categorical__ca_1,ST Slope = 1 (Flat) x Number of Major Vessels = 1,Toward no heart disease,-7.492033154192498
+categorical__ca_0 categorical__thal_7,Number of Major Vessels = 0 x Thalassemia Result = 7,Toward no heart disease,-7.288014604143882
+categorical__sex_0 categorical__cp_3,Sex = 0 (Female) x Chest Pain Type = 3 (Asymptomatic),Toward heart disease,6.906697955540373
+numeric__chol categorical__thal_6,Cholesterol x Thalassemia Result = 6,Toward heart disease,6.830436310461852
+numeric__age categorical__thal_3,Age x Thalassemia Result = 3 (Reversible defect),Toward heart disease,6.674478553296684
+categorical__restecg_2 categorical__ca_0,Resting ECG Result = 2 (Left ventricular hypertrophy) x Number of Major Vessels = 0,Toward no heart disease,-6.648878083912193
+categorical__fbs_1 categorical__restecg_1,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl) x Resting ECG Result = 1 (ST-T wave abnormality),Toward heart disease,6.597170338690261
+categorical__ca_0 categorical__thal_1,Number of Major Vessels = 0 x Thalassemia Result = 1 (Fixed defect),Toward heart disease,6.44950750748449
+categorical__restecg_2 categorical__thal_3,Resting ECG Result = 2 (Left ventricular hypertrophy) x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,-6.3093649085131736
+categorical__cp_2 categorical__slope_3,Chest Pain Type = 2 (Non-anginal pain) x ST Slope = 3,Toward no heart disease,-6.249026408194709
+categorical__ca_2 categorical__thal_3,Number of Major Vessels = 2 x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,-6.206172167820979
+categorical__sex_0 categorical__cp_0,Sex = 0 (Female) x Chest Pain Type = 0 (Typical angina),Toward no heart disease,-6.204778064639994
+categorical__cp_3 categorical__exang_1,Chest Pain Type = 3 (Asymptomatic) x Exercise-Induced Angina = 1 (Yes),Toward heart disease,6.127765755211091
+categorical__cp_1 categorical__slope_1,Chest Pain Type = 1 (Atypical angina) x ST Slope = 1 (Flat),Toward no heart disease,-6.101649489017495
+categorical__restecg_2 categorical__ca_3,Resting ECG Result = 2 (Left ventricular hypertrophy) x Number of Major Vessels = 3,Toward heart disease,6.061507006231226
+categorical__sex_1 categorical__ca_2,Sex = 1 (Male) x Number of Major Vessels = 2,Toward no heart disease,-5.950967770643778
+categorical__restecg_0 categorical__ca_3,Resting ECG Result = 0 (Normal) x Number of Major Vessels = 3,Toward no heart disease,-5.929784722335186
+categorical__cp_1 categorical__thal_3,Chest Pain Type = 1 (Atypical angina) x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,-5.684464168504528
+categorical__sex_0 categorical__exang_1,Sex = 0 (Female) x Exercise-Induced Angina = 1 (Yes),Toward no heart disease,-5.641197832197797
+numeric__oldpeak categorical__thal_3,Oldpeak x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,-5.580843567186946
+categorical__sex_0 categorical__restecg_0,Sex = 0 (Female) x Resting ECG Result = 0 (Normal),Toward no heart disease,-5.432940822585625
+categorical__sex_0 categorical__slope_2,Sex = 0 (Female) x ST Slope = 2 (Downsloping),Toward heart disease,5.4288552067691525
+categorical__ca_0 categorical__thal_2,Number of Major Vessels = 0 x Thalassemia Result = 2 (Normal),Toward heart disease,5.256915647850596
+categorical__cp_2 categorical__restecg_2,Chest Pain Type = 2 (Non-anginal pain) x Resting ECG Result = 2 (Left ventricular hypertrophy),Toward no heart disease,-5.17036667857349
+numeric__oldpeak categorical__thal_7,Oldpeak x Thalassemia Result = 7,Toward heart disease,5.08169701723123
+numeric__oldpeak categorical__exang_1,Oldpeak x Exercise-Induced Angina = 1 (Yes),Toward no heart disease,-4.6753650151821
+categorical__cp_0 categorical__exang_1,Chest Pain Type = 0 (Typical angina) x Exercise-Induced Angina = 1 (Yes),Toward no heart disease,-4.634087958652783
+numeric__oldpeak categorical__cp_1,Oldpeak x Chest Pain Type = 1 (Atypical angina),Toward no heart disease,-4.458605527711087
+categorical__fbs_0 categorical__ca_3,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl) x Number of Major Vessels = 3,Toward no heart disease,-4.3843938601845975
+categorical__cp_1 categorical__ca_1,Chest Pain Type = 1 (Atypical angina) x Number of Major Vessels = 1,Toward no heart disease,-4.365489570119407
+categorical__cp_1 categorical__restecg_0,Chest Pain Type = 1 (Atypical angina) x Resting ECG Result = 0 (Normal),Toward no heart disease,-4.345111556826385
+numeric__age categorical__thal_7,Age x Thalassemia Result = 7,Toward no heart disease,-4.267689017271347
+categorical__fbs_1 categorical__restecg_0,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl) x Resting ECG Result = 0 (Normal),Toward no heart disease,-4.242792218035338
+numeric__age categorical__sex_0,Age x Sex = 0 (Female),Toward no heart disease,-4.178036505119316
+categorical__cp_2 categorical__ca_0,Chest Pain Type = 2 (Non-anginal pain) x Number of Major Vessels = 0,Toward no heart disease,-4.125109786547027
+categorical__ca_1 categorical__thal_3,Number of Major Vessels = 1 x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,-4.073361794377919
+numeric__trestbps categorical__cp_1,Resting Blood Pressure x Chest Pain Type = 1 (Atypical angina),Toward no heart disease,-3.9286296918912957
+numeric__thalachh categorical__cp_1,Maximum Heart Rate x Chest Pain Type = 1 (Atypical angina),Toward heart disease,3.8171902539274947
+numeric__chol categorical__cp_3,Cholesterol x Chest Pain Type = 3 (Asymptomatic),Toward no heart disease,-3.801567084811551
+numeric__thalachh categorical__ca_3,Maximum Heart Rate x Number of Major Vessels = 3,Toward heart disease,3.6810715325350536
+numeric__trestbps categorical__thal_3,Resting Blood Pressure x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,-3.520525679065786
+categorical__restecg_0 categorical__slope_1,Resting ECG Result = 0 (Normal) x ST Slope = 1 (Flat),Toward no heart disease,-3.5111383267118264
+categorical__slope_2 categorical__thal_7,ST Slope = 2 (Downsloping) x Thalassemia Result = 7,Toward heart disease,3.5085763799650866
+numeric__thalachh categorical__fbs_1,Maximum Heart Rate x Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl),Toward heart disease,3.4993963294403256
+numeric__trestbps categorical__ca_2,Resting Blood Pressure x Number of Major Vessels = 2,Toward no heart disease,-3.438020278965152
+categorical__cp_3 categorical__fbs_1,Chest Pain Type = 3 (Asymptomatic) x Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl),Toward heart disease,3.3978356498228406
+categorical__fbs_1 categorical__thal_3,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl) x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,-3.3545812810300477
+categorical__cp_2 categorical__exang_0,Chest Pain Type = 2 (Non-anginal pain) x Exercise-Induced Angina = 0 (No),Toward heart disease,3.247289248406604
+numeric__chol categorical__cp_2,Cholesterol x Chest Pain Type = 2 (Non-anginal pain),Toward heart disease,3.1182504274446563
+categorical__restecg_0 categorical__ca_2,Resting ECG Result = 0 (Normal) x Number of Major Vessels = 2,Toward no heart disease,-3.007442114609353
+numeric__chol categorical__slope_2,Cholesterol x ST Slope = 2 (Downsloping),Toward no heart disease,-2.924119853707201
+numeric__trestbps categorical__slope_2,Resting Blood Pressure x ST Slope = 2 (Downsloping),Toward heart disease,2.8270098760223275
+categorical__sex_0 categorical__exang_0,Sex = 0 (Female) x Exercise-Induced Angina = 0 (No),Toward heart disease,2.8018271614063845
+numeric__trestbps categorical__cp_3,Resting Blood Pressure x Chest Pain Type = 3 (Asymptomatic),Toward heart disease,2.655357922105423
+numeric__chol categorical__exang_1,Cholesterol x Exercise-Induced Angina = 1 (Yes),Toward heart disease,2.5989384628780745
+numeric__oldpeak categorical__cp_2,Oldpeak x Chest Pain Type = 2 (Non-anginal pain),Toward no heart disease,-2.59138410410199
+numeric__chol categorical__ca_1,Cholesterol x Number of Major Vessels = 1,Toward heart disease,2.547222801067738
+numeric__trestbps categorical__restecg_1,Resting Blood Pressure x Resting ECG Result = 1 (ST-T wave abnormality),Toward no heart disease,-2.4911597830076397
+numeric__thalachh categorical__sex_0,Maximum Heart Rate x Sex = 0 (Female),Toward no heart disease,-2.4785357773564134
+numeric__chol categorical__thal_1,Cholesterol x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,-2.467178422474234
+categorical__cp_1 categorical__fbs_0,Chest Pain Type = 1 (Atypical angina) x Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl),Toward heart disease,2.455958357569393
+categorical__fbs_0 categorical__ca_4,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl) x Number of Major Vessels = 4,Toward heart disease,2.4101606667624274
+numeric__trestbps categorical__thal_7,Resting Blood Pressure x Thalassemia Result = 7,Toward heart disease,2.375952517815598
+numeric__thalachh categorical__ca_1,Maximum Heart Rate x Number of Major Vessels = 1,Toward no heart disease,-2.3513380959457013
+numeric__chol categorical__slope_1,Cholesterol x ST Slope = 1 (Flat),Toward heart disease,2.247996872774921
+numeric__thalachh categorical__cp_2,Maximum Heart Rate x Chest Pain Type = 2 (Non-anginal pain),Toward no heart disease,-2.143355305772176
+categorical__slope_2,ST Slope = 2 (Downsloping),Toward heart disease,2.126284648793663
+categorical__cp_3 categorical__restecg_0,Chest Pain Type = 3 (Asymptomatic) x Resting ECG Result = 0 (Normal),Toward heart disease,2.1118283434561547
+categorical__restecg_0 categorical__thal_2,Resting ECG Result = 0 (Normal) x Thalassemia Result = 2 (Normal),Toward heart disease,2.0598068236299514
+numeric__trestbps categorical__slope_3,Resting Blood Pressure x ST Slope = 3,Toward no heart disease,-2.032094026075884
+numeric__oldpeak categorical__slope_0,Oldpeak x ST Slope = 0 (Upsloping),Toward no heart disease,-2.024830209414333
+categorical__cp_0 categorical__ca_0,Chest Pain Type = 0 (Typical angina) x Number of Major Vessels = 0,Toward heart disease,2.0154635339844775
+numeric__age categorical__fbs_0,Age x Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl),Toward no heart disease,-1.9944310241804275
+numeric__trestbps categorical__slope_1,Resting Blood Pressure x ST Slope = 1 (Flat),Toward no heart disease,-1.9591411169082287
+categorical__fbs_0 categorical__restecg_1,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl) x Resting ECG Result = 1 (ST-T wave abnormality),Toward no heart disease,-1.9307740740244008
+numeric__oldpeak categorical__thal_1,Oldpeak x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,-1.9216134373062723
+numeric__oldpeak categorical__cp_3,Oldpeak x Chest Pain Type = 3 (Asymptomatic),Toward heart disease,1.9157568061482024
+categorical__cp_0 categorical__restecg_0,Chest Pain Type = 0 (Typical angina) x Resting ECG Result = 0 (Normal),Toward no heart disease,-1.8778141684590501
+numeric__chol categorical__sex_0,Cholesterol x Sex = 0 (Female),Toward heart disease,1.8228315521057155
+numeric__trestbps categorical__thal_1,Resting Blood Pressure x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,-1.7588435816399641
+numeric__thalachh numeric__oldpeak,Maximum Heart Rate x Oldpeak,Toward heart disease,1.745597533189616
+categorical__sex_1 categorical__thal_7,Sex = 1 (Male) x Thalassemia Result = 7,Toward heart disease,1.6802007690014449
+categorical__exang_0 categorical__ca_4,Exercise-Induced Angina = 0 (No) x Number of Major Vessels = 4,Toward heart disease,1.6764540247428936
+numeric__chol categorical__restecg_0,Cholesterol x Resting ECG Result = 0 (Normal),Toward no heart disease,-1.5123205015889714
+numeric__age categorical__ca_1,Age x Number of Major Vessels = 1,Toward no heart disease,-1.5015182618751957
+numeric__trestbps categorical__cp_2,Resting Blood Pressure x Chest Pain Type = 2 (Non-anginal pain),Toward heart disease,1.4906397670377862
+numeric__trestbps categorical__sex_0,Resting Blood Pressure x Sex = 0 (Female),Toward heart disease,1.451741019539261
+categorical__sex_0 categorical__ca_0,Sex = 0 (Female) x Number of Major Vessels = 0,Toward no heart disease,-1.4287268967203226
+categorical__restecg_0 categorical__ca_1,Resting ECG Result = 0 (Normal) x Number of Major Vessels = 1,Toward heart disease,1.3640498049814085
+categorical__exang_1 categorical__slope_1,Exercise-Induced Angina = 1 (Yes) x ST Slope = 1 (Flat),Toward no heart disease,-1.3499696335834737
+numeric__thalachh categorical__sex_1,Maximum Heart Rate x Sex = 1 (Male),Toward heart disease,1.3449598030563121
+categorical__fbs_1 categorical__thal_2,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl) x Thalassemia Result = 2 (Normal),Toward heart disease,1.3267123105099494
+numeric__thalachh categorical__slope_2,Maximum Heart Rate x ST Slope = 2 (Downsloping),Toward heart disease,1.3255487059270579
+categorical__ca_1 categorical__thal_7,Number of Major Vessels = 1 x Thalassemia Result = 7,Toward heart disease,1.3038424009407614
+categorical__sex_1 categorical__ca_4,Sex = 1 (Male) x Number of Major Vessels = 4,Toward heart disease,1.3037328077029866
+numeric__chol categorical__thal_2,Cholesterol x Thalassemia Result = 2 (Normal),Toward no heart disease,-1.3035093401366162
+numeric__age categorical__cp_2,Age x Chest Pain Type = 2 (Non-anginal pain),Toward no heart disease,-1.290854186645848
+categorical__cp_2 categorical__slope_2,Chest Pain Type = 2 (Non-anginal pain) x ST Slope = 2 (Downsloping),Toward heart disease,1.2660732439395264
+categorical__fbs_1 categorical__exang_0,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl) x Exercise-Induced Angina = 0 (No),Toward heart disease,1.2368904101691465
+numeric__chol numeric__oldpeak,Cholesterol x Oldpeak,Toward no heart disease,-1.2365058757828644
+numeric__oldpeak categorical__restecg_2,Oldpeak x Resting ECG Result = 2 (Left ventricular hypertrophy),Toward heart disease,1.2103430428933837
+categorical__thal_3,Thalassemia Result = 3 (Reversible defect),Toward no heart disease,-1.1669583060565623
+categorical__restecg_1 categorical__ca_4,Resting ECG Result = 1 (ST-T wave abnormality) x Number of Major Vessels = 4,Toward heart disease,1.1339893089430155
+categorical__cp_3 categorical__ca_1,Chest Pain Type = 3 (Asymptomatic) x Number of Major Vessels = 1,Toward heart disease,1.1069280598240818
+categorical__sex_0 categorical__cp_1,Sex = 0 (Female) x Chest Pain Type = 1 (Atypical angina),Toward heart disease,1.0781678886279886
+categorical__cp_3 categorical__slope_1,Chest Pain Type = 3 (Asymptomatic) x ST Slope = 1 (Flat),Toward heart disease,1.077812828720613
+numeric__chol categorical__ca_0,Cholesterol x Number of Major Vessels = 0,Toward no heart disease,-1.0585599526301832
+categorical__cp_0 categorical__thal_2,Chest Pain Type = 0 (Typical angina) x Thalassemia Result = 2 (Normal),Toward heart disease,1.0306486170639357
+categorical__cp_3 categorical__restecg_1,Chest Pain Type = 3 (Asymptomatic) x Resting ECG Result = 1 (ST-T wave abnormality),Toward no heart disease,-1.0267783855109924
+numeric__age categorical__restecg_0,Age x Resting ECG Result = 0 (Normal),Toward heart disease,0.9976000996002469
+numeric__chol categorical__sex_1,Cholesterol x Sex = 1 (Male),Toward no heart disease,-0.9847347212383356
+numeric__trestbps categorical__exang_0,Resting Blood Pressure x Exercise-Induced Angina = 0 (No),Toward heart disease,0.9522376343746981
+numeric__age numeric__thalachh,Age x Maximum Heart Rate,Toward no heart disease,-0.9513670363956982
+numeric__thalachh categorical__restecg_1,Maximum Heart Rate x Resting ECG Result = 1 (ST-T wave abnormality),Toward heart disease,0.9470414413384693
+categorical__exang_1 categorical__ca_1,Exercise-Induced Angina = 1 (Yes) x Number of Major Vessels = 1,Toward heart disease,0.9392439741220788
+numeric__age numeric__oldpeak,Age x Oldpeak,Toward no heart disease,-0.9171159765328649
+categorical__restecg_0 categorical__exang_0,Resting ECG Result = 0 (Normal) x Exercise-Induced Angina = 0 (No),Toward no heart disease,-0.9151313640243395
+categorical__restecg_0 categorical__ca_0,Resting ECG Result = 0 (Normal) x Number of Major Vessels = 0,Toward heart disease,0.8818410930376129
+categorical__cp_1 categorical__slope_2,Chest Pain Type = 1 (Atypical angina) x ST Slope = 2 (Downsloping),Toward heart disease,0.8779468257899199
+numeric__thalachh categorical__exang_0,Maximum Heart Rate x Exercise-Induced Angina = 0 (No),Toward heart disease,0.8571729633977127
+categorical__sex_1 categorical__exang_1,Sex = 1 (Male) x Exercise-Induced Angina = 1 (Yes),Toward heart disease,0.8474929654539615
+numeric__trestbps numeric__oldpeak,Resting Blood Pressure x Oldpeak,Toward no heart disease,-0.8380970190907486
+numeric__oldpeak categorical__slope_1,Oldpeak x ST Slope = 1 (Flat),Toward no heart disease,-0.826576459557082
+categorical__restecg_1 categorical__thal_2,Resting ECG Result = 1 (ST-T wave abnormality) x Thalassemia Result = 2 (Normal),Toward no heart disease,-0.8243075634676427
+categorical__cp_3 categorical__thal_2,Chest Pain Type = 3 (Asymptomatic) x Thalassemia Result = 2 (Normal),Toward no heart disease,-0.7905957896160759
+numeric__trestbps numeric__thalachh,Resting Blood Pressure x Maximum Heart Rate,Toward no heart disease,-0.7523571476624427
+numeric__age categorical__slope_2,Age x ST Slope = 2 (Downsloping),Toward no heart disease,-0.7485338743370655
+numeric__trestbps categorical__exang_1,Resting Blood Pressure x Exercise-Induced Angina = 1 (Yes),Toward no heart disease,-0.7289848950581495
+categorical__fbs_1 categorical__ca_3,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl) x Number of Major Vessels = 3,Toward heart disease,0.7023638653729142
+categorical__slope_2 categorical__ca_1,ST Slope = 2 (Downsloping) x Number of Major Vessels = 1,Toward heart disease,0.6867930357376033
+categorical__sex_1 categorical__cp_2,Sex = 1 (Male) x Chest Pain Type = 2 (Non-anginal pain),Toward heart disease,0.6867350068924442
+numeric__oldpeak categorical__thal_2,Oldpeak x Thalassemia Result = 2 (Normal),Toward heart disease,0.6857213541085948
+numeric__chol categorical__restecg_2,Cholesterol x Resting ECG Result = 2 (Left ventricular hypertrophy),Toward heart disease,0.6749629007457721
+categorical__sex_1 categorical__fbs_1,Sex = 1 (Male) x Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl),Toward heart disease,0.6725731037365726
+numeric__thalachh categorical__restecg_0,Maximum Heart Rate x Resting ECG Result = 0 (Normal),Toward no heart disease,-0.6046829934716084
+numeric__oldpeak categorical__ca_2,Oldpeak x Number of Major Vessels = 2,Toward no heart disease,-0.5955734239169792
+categorical__fbs_1 categorical__exang_1,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl) x Exercise-Induced Angina = 1 (Yes),Toward no heart disease,-0.5893390565516249
+numeric__trestbps categorical__fbs_1,Resting Blood Pressure x Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl),Toward heart disease,0.5856416806870326
+numeric__trestbps categorical__restecg_2,Resting Blood Pressure x Resting ECG Result = 2 (Left ventricular hypertrophy),Toward heart disease,0.5557061619512589
+categorical__restecg_2 categorical__thal_7,Resting ECG Result = 2 (Left ventricular hypertrophy) x Thalassemia Result = 7,Toward heart disease,0.5323863504394968
+categorical__restecg_2 categorical__slope_3,Resting ECG Result = 2 (Left ventricular hypertrophy) x ST Slope = 3,Toward no heart disease,-0.5285455555582028
+numeric__oldpeak categorical__sex_1,Oldpeak x Sex = 1 (Male),Toward no heart disease,-0.5281279545884857
+numeric__thalachh categorical__exang_1,Maximum Heart Rate x Exercise-Induced Angina = 1 (Yes),Toward no heart disease,-0.516422901018745
+numeric__age categorical__restecg_1,Age x Resting ECG Result = 1 (ST-T wave abnormality),Toward no heart disease,-0.48081033033195525
+categorical__cp_2 categorical__ca_1,Chest Pain Type = 2 (Non-anginal pain) x Number of Major Vessels = 1,Toward heart disease,0.47382703898503603
+categorical__exang_1 categorical__slope_2,Exercise-Induced Angina = 1 (Yes) x ST Slope = 2 (Downsloping),Toward heart disease,0.4496616697800448
+categorical__cp_2 categorical__fbs_1,Chest Pain Type = 2 (Non-anginal pain) x Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl),Toward heart disease,0.43182950932940073
+numeric__chol numeric__thalachh,Cholesterol x Maximum Heart Rate,Toward heart disease,0.38882016782162016
+categorical__fbs_1 categorical__slope_2,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl) x ST Slope = 2 (Downsloping),Toward heart disease,0.3834171308459581
+numeric__age categorical__cp_0,Age x Chest Pain Type = 0 (Typical angina),Toward no heart disease,-0.37321704431610714
+categorical__cp_1 categorical__exang_1,Chest Pain Type = 1 (Atypical angina) x Exercise-Induced Angina = 1 (Yes),Toward heart disease,0.36635475934929096
+categorical__fbs_0 categorical__exang_1,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl) x Exercise-Induced Angina = 1 (Yes),Toward heart disease,0.3344279987289359
+categorical__restecg_0 categorical__thal_3,Resting ECG Result = 0 (Normal) x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,-0.32778958266122155
+categorical__exang_0 categorical__ca_1,Exercise-Induced Angina = 0 (No) x Number of Major Vessels = 1,Toward no heart disease,-0.28334451543437134
+numeric__chol categorical__fbs_0,Cholesterol x Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl),Toward heart disease,0.26922455112111987
+numeric__chol categorical__exang_0,Cholesterol x Exercise-Induced Angina = 0 (No),Toward no heart disease,-0.24502099886169376
+categorical__sex_0 categorical__fbs_1,Sex = 0 (Female) x Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl),Toward no heart disease,-0.22556636867558422
+categorical__restecg_1 categorical__thal_3,Resting ECG Result = 1 (ST-T wave abnormality) x Thalassemia Result = 3 (Reversible defect),Toward heart disease,0.184149431003978
+numeric__age categorical__cp_1,Age x Chest Pain Type = 1 (Atypical angina),Toward heart disease,0.1558783260080967
+numeric__age numeric__chol,Age x Cholesterol,Toward heart disease,0.15348880825815395
+numeric__age categorical__restecg_2,Age x Resting ECG Result = 2 (Left ventricular hypertrophy),Toward no heart disease,-0.13346869341115017
+numeric__chol categorical__fbs_1,Cholesterol x Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl),Toward no heart disease,-0.09858205467815888
+categorical__sex_0 categorical__ca_2,Sex = 0 (Female) x Number of Major Vessels = 2,Toward heart disease,0.09168147522290106
+categorical__exang_1 categorical__thal_7,Exercise-Induced Angina = 1 (Yes) x Thalassemia Result = 7,Toward heart disease,0.08868931993397265
+numeric__trestbps numeric__chol,Resting Blood Pressure x Cholesterol,Toward heart disease,0.08644313522046247
+numeric__age numeric__trestbps,Age x Resting Blood Pressure,Toward no heart disease,-0.08563297526627528
+numeric__thalachh categorical__fbs_0,Maximum Heart Rate x Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl),Toward no heart disease,-0.0606135876232559
+categorical__sex_1 categorical__exang_0,Sex = 1 (Male) x Exercise-Induced Angina = 0 (No),Toward no heart disease,-0.055795943598637425
+numeric__trestbps categorical__cp_0,Resting Blood Pressure x Chest Pain Type = 0 (Typical angina),Toward no heart disease,-0.03528501515186828
+numeric__age categorical__exang_0,Age x Exercise-Induced Angina = 0 (No),Toward no heart disease,-0.019711224709226084
+categorical__sex_0 categorical__fbs_0,Sex = 0 (Female) x Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl),Toward heart disease,0.005941267495655404
+numeric__trestbps categorical__fbs_0,Resting Blood Pressure x Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl),Toward no heart disease,-0.0008808653164646563
+categorical__restecg_1 categorical__slope_2,Resting ECG Result = 1 (ST-T wave abnormality) x ST Slope = 2 (Downsloping),Toward no heart disease,0.0
+categorical__restecg_1 categorical__thal_6,Resting ECG Result = 1 (ST-T wave abnormality) x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__fbs_1 categorical__thal_1,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl) x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__restecg_1 categorical__slope_3,Resting ECG Result = 1 (ST-T wave abnormality) x ST Slope = 3,Toward no heart disease,0.0
+categorical__restecg_2 categorical__thal_2,Resting ECG Result = 2 (Left ventricular hypertrophy) x Thalassemia Result = 2 (Normal),Toward no heart disease,0.0
+categorical__restecg_1 categorical__ca_0,Resting ECG Result = 1 (ST-T wave abnormality) x Number of Major Vessels = 0,Toward no heart disease,0.0
+categorical__restecg_2 categorical__thal_1,Resting ECG Result = 2 (Left ventricular hypertrophy) x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__restecg_2 categorical__thal_6,Resting ECG Result = 2 (Left ventricular hypertrophy) x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__restecg_0 categorical__slope_2,Resting ECG Result = 0 (Normal) x ST Slope = 2 (Downsloping),Toward no heart disease,0.0
+categorical__restecg_0 categorical__thal_1,Resting ECG Result = 0 (Normal) x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__restecg_1 categorical__ca_1,Resting ECG Result = 1 (ST-T wave abnormality) x Number of Major Vessels = 1,Toward no heart disease,0.0
+categorical__restecg_0 categorical__thal_0,Resting ECG Result = 0 (Normal) x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__exang_0 categorical__exang_1,Exercise-Induced Angina = 0 (No) x Exercise-Induced Angina = 1 (Yes),Toward no heart disease,0.0
+categorical__restecg_0 categorical__restecg_1,Resting ECG Result = 0 (Normal) x Resting ECG Result = 1 (ST-T wave abnormality),Toward no heart disease,0.0
+categorical__exang_0 categorical__slope_0,Exercise-Induced Angina = 0 (No) x ST Slope = 0 (Upsloping),Toward no heart disease,0.0
+categorical__restecg_0 categorical__slope_3,Resting ECG Result = 0 (Normal) x ST Slope = 3,Toward no heart disease,0.0
+categorical__exang_0 categorical__slope_1,Exercise-Induced Angina = 0 (No) x ST Slope = 1 (Flat),Toward no heart disease,0.0
+categorical__fbs_1 categorical__thal_7,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl) x Thalassemia Result = 7,Toward no heart disease,0.0
+categorical__exang_0 categorical__slope_2,Exercise-Induced Angina = 0 (No) x ST Slope = 2 (Downsloping),Toward no heart disease,0.0
+categorical__exang_0 categorical__slope_3,Exercise-Induced Angina = 0 (No) x ST Slope = 3,Toward no heart disease,0.0
+categorical__exang_0 categorical__ca_0,Exercise-Induced Angina = 0 (No) x Number of Major Vessels = 0,Toward no heart disease,0.0
+categorical__restecg_0 categorical__ca_4,Resting ECG Result = 0 (Normal) x Number of Major Vessels = 4,Toward no heart disease,0.0
+categorical__restecg_1 categorical__slope_1,Resting ECG Result = 1 (ST-T wave abnormality) x ST Slope = 1 (Flat),Toward no heart disease,0.0
+categorical__restecg_1 categorical__slope_0,Resting ECG Result = 1 (ST-T wave abnormality) x ST Slope = 0 (Upsloping),Toward no heart disease,0.0
+categorical__restecg_2 categorical__thal_0,Resting ECG Result = 2 (Left ventricular hypertrophy) x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__fbs_1 categorical__thal_0,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl) x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__restecg_2 categorical__ca_4,Resting ECG Result = 2 (Left ventricular hypertrophy) x Number of Major Vessels = 4,Toward no heart disease,0.0
+categorical__restecg_1 categorical__ca_2,Resting ECG Result = 1 (ST-T wave abnormality) x Number of Major Vessels = 2,Toward no heart disease,0.0
+categorical__restecg_1 categorical__thal_7,Resting ECG Result = 1 (ST-T wave abnormality) x Thalassemia Result = 7,Toward no heart disease,0.0
+categorical__fbs_1 categorical__slope_3,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl) x ST Slope = 3,Toward no heart disease,0.0
+categorical__restecg_1 categorical__restecg_2,Resting ECG Result = 1 (ST-T wave abnormality) x Resting ECG Result = 2 (Left ventricular hypertrophy),Toward no heart disease,0.0
+categorical__restecg_0 categorical__thal_7,Resting ECG Result = 0 (Normal) x Thalassemia Result = 7,Toward no heart disease,0.0
+categorical__restecg_0 categorical__slope_0,Resting ECG Result = 0 (Normal) x ST Slope = 0 (Upsloping),Toward no heart disease,0.0
+categorical__restecg_0 categorical__exang_1,Resting ECG Result = 0 (Normal) x Exercise-Induced Angina = 1 (Yes),Toward no heart disease,0.0
+categorical__restecg_0 categorical__thal_6,Resting ECG Result = 0 (Normal) x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__fbs_1 categorical__ca_4,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl) x Number of Major Vessels = 4,Toward no heart disease,0.0
+categorical__restecg_2 categorical__exang_1,Resting ECG Result = 2 (Left ventricular hypertrophy) x Exercise-Induced Angina = 1 (Yes),Toward no heart disease,0.0
+categorical__fbs_1 categorical__ca_1,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl) x Number of Major Vessels = 1,Toward no heart disease,0.0
+categorical__restecg_1 categorical__exang_1,Resting ECG Result = 1 (ST-T wave abnormality) x Exercise-Induced Angina = 1 (Yes),Toward no heart disease,0.0
+categorical__restecg_1 categorical__thal_1,Resting ECG Result = 1 (ST-T wave abnormality) x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__restecg_2 categorical__slope_0,Resting ECG Result = 2 (Left ventricular hypertrophy) x ST Slope = 0 (Upsloping),Toward no heart disease,0.0
+categorical__restecg_2 categorical__slope_1,Resting ECG Result = 2 (Left ventricular hypertrophy) x ST Slope = 1 (Flat),Toward no heart disease,0.0
+categorical__restecg_1 categorical__thal_0,Resting ECG Result = 1 (ST-T wave abnormality) x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__fbs_1 categorical__ca_0,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl) x Number of Major Vessels = 0,Toward no heart disease,0.0
+categorical__restecg_2 categorical__slope_2,Resting ECG Result = 2 (Left ventricular hypertrophy) x ST Slope = 2 (Downsloping),Toward no heart disease,0.0
+categorical__fbs_1 categorical__thal_6,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl) x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__restecg_0 categorical__restecg_2,Resting ECG Result = 0 (Normal) x Resting ECG Result = 2 (Left ventricular hypertrophy),Toward no heart disease,0.0
+categorical__fbs_1 categorical__slope_1,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl) x ST Slope = 1 (Flat),Toward no heart disease,0.0
+categorical__restecg_2 categorical__ca_1,Resting ECG Result = 2 (Left ventricular hypertrophy) x Number of Major Vessels = 1,Toward no heart disease,0.0
+categorical__fbs_1 categorical__slope_0,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl) x ST Slope = 0 (Upsloping),Toward no heart disease,0.0
+categorical__restecg_1 categorical__ca_3,Resting ECG Result = 1 (ST-T wave abnormality) x Number of Major Vessels = 3,Toward no heart disease,0.0
+categorical__restecg_1 categorical__exang_0,Resting ECG Result = 1 (ST-T wave abnormality) x Exercise-Induced Angina = 0 (No),Toward no heart disease,0.0
+numeric__age,Age,Toward no heart disease,0.0
+categorical__exang_0 categorical__ca_2,Exercise-Induced Angina = 0 (No) x Number of Major Vessels = 2,Toward no heart disease,0.0
+categorical__slope_3 categorical__ca_2,ST Slope = 3 x Number of Major Vessels = 2,Toward no heart disease,0.0
+categorical__ca_2 categorical__thal_1,Number of Major Vessels = 2 x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__ca_2 categorical__thal_0,Number of Major Vessels = 2 x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__ca_2 categorical__ca_4,Number of Major Vessels = 2 x Number of Major Vessels = 4,Toward no heart disease,0.0
+categorical__ca_2 categorical__ca_3,Number of Major Vessels = 2 x Number of Major Vessels = 3,Toward no heart disease,0.0
+categorical__ca_1 categorical__thal_6,Number of Major Vessels = 1 x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__ca_1 categorical__thal_2,Number of Major Vessels = 1 x Thalassemia Result = 2 (Normal),Toward no heart disease,0.0
+categorical__ca_1 categorical__thal_1,Number of Major Vessels = 1 x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__ca_1 categorical__thal_0,Number of Major Vessels = 1 x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__ca_1 categorical__ca_4,Number of Major Vessels = 1 x Number of Major Vessels = 4,Toward no heart disease,0.0
+categorical__ca_1 categorical__ca_3,Number of Major Vessels = 1 x Number of Major Vessels = 3,Toward no heart disease,0.0
+categorical__ca_1 categorical__ca_2,Number of Major Vessels = 1 x Number of Major Vessels = 2,Toward no heart disease,0.0
+categorical__ca_0 categorical__thal_6,Number of Major Vessels = 0 x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__ca_0 categorical__thal_3,Number of Major Vessels = 0 x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,0.0
+categorical__ca_0 categorical__thal_0,Number of Major Vessels = 0 x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__ca_0 categorical__ca_4,Number of Major Vessels = 0 x Number of Major Vessels = 4,Toward no heart disease,0.0
+categorical__ca_0 categorical__ca_3,Number of Major Vessels = 0 x Number of Major Vessels = 3,Toward no heart disease,0.0
+categorical__ca_0 categorical__ca_2,Number of Major Vessels = 0 x Number of Major Vessels = 2,Toward no heart disease,0.0
+categorical__ca_0 categorical__ca_1,Number of Major Vessels = 0 x Number of Major Vessels = 1,Toward no heart disease,0.0
+categorical__slope_3 categorical__thal_7,ST Slope = 3 x Thalassemia Result = 7,Toward no heart disease,0.0
+categorical__slope_3 categorical__thal_6,ST Slope = 3 x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__slope_3 categorical__thal_3,ST Slope = 3 x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,0.0
+categorical__slope_3 categorical__thal_2,ST Slope = 3 x Thalassemia Result = 2 (Normal),Toward no heart disease,0.0
+categorical__slope_3 categorical__thal_1,ST Slope = 3 x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__slope_3 categorical__thal_0,ST Slope = 3 x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__slope_3 categorical__ca_4,ST Slope = 3 x Number of Major Vessels = 4,Toward no heart disease,0.0
+categorical__ca_2 categorical__thal_2,Number of Major Vessels = 2 x Thalassemia Result = 2 (Normal),Toward no heart disease,0.0
+categorical__ca_2 categorical__thal_6,Number of Major Vessels = 2 x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__ca_3 categorical__ca_4,Number of Major Vessels = 3 x Number of Major Vessels = 4,Toward no heart disease,0.0
+categorical__thal_0 categorical__thal_3,Thalassemia Result = 0 (Unknown) x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,0.0
+categorical__thal_3 categorical__thal_7,Thalassemia Result = 3 (Reversible defect) x Thalassemia Result = 7,Toward no heart disease,0.0
+categorical__thal_3 categorical__thal_6,Thalassemia Result = 3 (Reversible defect) x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__thal_2 categorical__thal_7,Thalassemia Result = 2 (Normal) x Thalassemia Result = 7,Toward no heart disease,0.0
+categorical__thal_2 categorical__thal_6,Thalassemia Result = 2 (Normal) x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__thal_2 categorical__thal_3,Thalassemia Result = 2 (Normal) x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,0.0
+categorical__thal_1 categorical__thal_7,Thalassemia Result = 1 (Fixed defect) x Thalassemia Result = 7,Toward no heart disease,0.0
+categorical__thal_1 categorical__thal_6,Thalassemia Result = 1 (Fixed defect) x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__thal_1 categorical__thal_3,Thalassemia Result = 1 (Fixed defect) x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,0.0
+categorical__thal_1 categorical__thal_2,Thalassemia Result = 1 (Fixed defect) x Thalassemia Result = 2 (Normal),Toward no heart disease,0.0
+categorical__thal_0 categorical__thal_7,Thalassemia Result = 0 (Unknown) x Thalassemia Result = 7,Toward no heart disease,0.0
+categorical__thal_0 categorical__thal_6,Thalassemia Result = 0 (Unknown) x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__thal_0 categorical__thal_2,Thalassemia Result = 0 (Unknown) x Thalassemia Result = 2 (Normal),Toward no heart disease,0.0
+categorical__ca_3 categorical__thal_0,Number of Major Vessels = 3 x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__thal_0 categorical__thal_1,Thalassemia Result = 0 (Unknown) x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__ca_4 categorical__thal_7,Number of Major Vessels = 4 x Thalassemia Result = 7,Toward no heart disease,0.0
+categorical__ca_4 categorical__thal_6,Number of Major Vessels = 4 x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__ca_4 categorical__thal_3,Number of Major Vessels = 4 x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,0.0
+categorical__ca_4 categorical__thal_2,Number of Major Vessels = 4 x Thalassemia Result = 2 (Normal),Toward no heart disease,0.0
+categorical__ca_4 categorical__thal_1,Number of Major Vessels = 4 x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__ca_4 categorical__thal_0,Number of Major Vessels = 4 x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__ca_3 categorical__thal_7,Number of Major Vessels = 3 x Thalassemia Result = 7,Toward no heart disease,0.0
+categorical__ca_3 categorical__thal_6,Number of Major Vessels = 3 x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__ca_3 categorical__thal_2,Number of Major Vessels = 3 x Thalassemia Result = 2 (Normal),Toward no heart disease,0.0
+categorical__ca_3 categorical__thal_1,Number of Major Vessels = 3 x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__slope_3 categorical__ca_3,ST Slope = 3 x Number of Major Vessels = 3,Toward no heart disease,0.0
+categorical__slope_3 categorical__ca_1,ST Slope = 3 x Number of Major Vessels = 1,Toward no heart disease,0.0
+categorical__exang_0 categorical__ca_3,Exercise-Induced Angina = 0 (No) x Number of Major Vessels = 3,Toward no heart disease,0.0
+categorical__slope_3 categorical__ca_0,ST Slope = 3 x Number of Major Vessels = 0,Toward no heart disease,0.0
+categorical__slope_0 categorical__ca_4,ST Slope = 0 (Upsloping) x Number of Major Vessels = 4,Toward no heart disease,0.0
+categorical__slope_0 categorical__ca_3,ST Slope = 0 (Upsloping) x Number of Major Vessels = 3,Toward no heart disease,0.0
+categorical__slope_0 categorical__ca_2,ST Slope = 0 (Upsloping) x Number of Major Vessels = 2,Toward no heart disease,0.0
+categorical__slope_0 categorical__ca_1,ST Slope = 0 (Upsloping) x Number of Major Vessels = 1,Toward no heart disease,0.0
+categorical__slope_0 categorical__ca_0,ST Slope = 0 (Upsloping) x Number of Major Vessels = 0,Toward no heart disease,0.0
+categorical__slope_0 categorical__slope_3,ST Slope = 0 (Upsloping) x ST Slope = 3,Toward no heart disease,0.0
+categorical__slope_0 categorical__slope_2,ST Slope = 0 (Upsloping) x ST Slope = 2 (Downsloping),Toward no heart disease,0.0
+categorical__slope_0 categorical__slope_1,ST Slope = 0 (Upsloping) x ST Slope = 1 (Flat),Toward no heart disease,0.0
+categorical__exang_1 categorical__thal_6,Exercise-Induced Angina = 1 (Yes) x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__exang_1 categorical__thal_3,Exercise-Induced Angina = 1 (Yes) x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,0.0
+categorical__exang_1 categorical__thal_2,Exercise-Induced Angina = 1 (Yes) x Thalassemia Result = 2 (Normal),Toward no heart disease,0.0
+categorical__exang_1 categorical__thal_1,Exercise-Induced Angina = 1 (Yes) x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__exang_1 categorical__thal_0,Exercise-Induced Angina = 1 (Yes) x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__exang_1 categorical__ca_4,Exercise-Induced Angina = 1 (Yes) x Number of Major Vessels = 4,Toward no heart disease,0.0
+categorical__exang_1 categorical__ca_3,Exercise-Induced Angina = 1 (Yes) x Number of Major Vessels = 3,Toward no heart disease,0.0
+categorical__exang_1 categorical__ca_2,Exercise-Induced Angina = 1 (Yes) x Number of Major Vessels = 2,Toward no heart disease,0.0
+categorical__exang_1 categorical__ca_0,Exercise-Induced Angina = 1 (Yes) x Number of Major Vessels = 0,Toward no heart disease,0.0
+categorical__exang_1 categorical__slope_3,Exercise-Induced Angina = 1 (Yes) x ST Slope = 3,Toward no heart disease,0.0
+categorical__exang_1 categorical__slope_0,Exercise-Induced Angina = 1 (Yes) x ST Slope = 0 (Upsloping),Toward no heart disease,0.0
+categorical__exang_0 categorical__thal_7,Exercise-Induced Angina = 0 (No) x Thalassemia Result = 7,Toward no heart disease,0.0
+categorical__exang_0 categorical__thal_6,Exercise-Induced Angina = 0 (No) x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__exang_0 categorical__thal_3,Exercise-Induced Angina = 0 (No) x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,0.0
+categorical__exang_0 categorical__thal_2,Exercise-Induced Angina = 0 (No) x Thalassemia Result = 2 (Normal),Toward no heart disease,0.0
+categorical__exang_0 categorical__thal_1,Exercise-Induced Angina = 0 (No) x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__exang_0 categorical__thal_0,Exercise-Induced Angina = 0 (No) x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__slope_0 categorical__thal_0,ST Slope = 0 (Upsloping) x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__slope_0 categorical__thal_1,ST Slope = 0 (Upsloping) x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__slope_0 categorical__thal_2,ST Slope = 0 (Upsloping) x Thalassemia Result = 2 (Normal),Toward no heart disease,0.0
+categorical__slope_1 categorical__thal_6,ST Slope = 1 (Flat) x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__slope_2 categorical__thal_6,ST Slope = 2 (Downsloping) x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__slope_2 categorical__thal_3,ST Slope = 2 (Downsloping) x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,0.0
+categorical__slope_2 categorical__thal_2,ST Slope = 2 (Downsloping) x Thalassemia Result = 2 (Normal),Toward no heart disease,0.0
+categorical__slope_2 categorical__thal_1,ST Slope = 2 (Downsloping) x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__slope_2 categorical__thal_0,ST Slope = 2 (Downsloping) x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__slope_2 categorical__ca_4,ST Slope = 2 (Downsloping) x Number of Major Vessels = 4,Toward no heart disease,0.0
+categorical__slope_2 categorical__ca_3,ST Slope = 2 (Downsloping) x Number of Major Vessels = 3,Toward no heart disease,0.0
+categorical__slope_2 categorical__ca_2,ST Slope = 2 (Downsloping) x Number of Major Vessels = 2,Toward no heart disease,0.0
+categorical__slope_2 categorical__ca_0,ST Slope = 2 (Downsloping) x Number of Major Vessels = 0,Toward no heart disease,0.0
+categorical__slope_2 categorical__slope_3,ST Slope = 2 (Downsloping) x ST Slope = 3,Toward no heart disease,0.0
+categorical__slope_1 categorical__thal_7,ST Slope = 1 (Flat) x Thalassemia Result = 7,Toward no heart disease,0.0
+categorical__slope_1 categorical__thal_3,ST Slope = 1 (Flat) x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,0.0
+categorical__slope_0 categorical__thal_3,ST Slope = 0 (Upsloping) x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,0.0
+categorical__slope_1 categorical__thal_2,ST Slope = 1 (Flat) x Thalassemia Result = 2 (Normal),Toward no heart disease,0.0
+categorical__slope_1 categorical__thal_1,ST Slope = 1 (Flat) x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__slope_1 categorical__thal_0,ST Slope = 1 (Flat) x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__slope_1 categorical__ca_4,ST Slope = 1 (Flat) x Number of Major Vessels = 4,Toward no heart disease,0.0
+categorical__slope_1 categorical__ca_3,ST Slope = 1 (Flat) x Number of Major Vessels = 3,Toward no heart disease,0.0
+categorical__slope_1 categorical__ca_2,ST Slope = 1 (Flat) x Number of Major Vessels = 2,Toward no heart disease,0.0
+categorical__slope_1 categorical__ca_0,ST Slope = 1 (Flat) x Number of Major Vessels = 0,Toward no heart disease,0.0
+categorical__slope_1 categorical__slope_3,ST Slope = 1 (Flat) x ST Slope = 3,Toward no heart disease,0.0
+categorical__fbs_1 categorical__restecg_2,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl) x Resting ECG Result = 2 (Left ventricular hypertrophy),Toward no heart disease,0.0
+categorical__slope_0 categorical__thal_7,ST Slope = 0 (Upsloping) x Thalassemia Result = 7,Toward no heart disease,0.0
+categorical__slope_0 categorical__thal_6,ST Slope = 0 (Upsloping) x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__slope_1 categorical__slope_2,ST Slope = 1 (Flat) x ST Slope = 2 (Downsloping),Toward no heart disease,0.0
+categorical__cp_1 categorical__thal_1,Chest Pain Type = 1 (Atypical angina) x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__fbs_0 categorical__thal_7,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl) x Thalassemia Result = 7,Toward no heart disease,0.0
+numeric__thalachh categorical__cp_0,Maximum Heart Rate x Chest Pain Type = 0 (Typical angina),Toward no heart disease,0.0
+numeric__thalachh categorical__thal_1,Maximum Heart Rate x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+numeric__thalachh categorical__thal_0,Maximum Heart Rate x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+numeric__thalachh categorical__ca_4,Maximum Heart Rate x Number of Major Vessels = 4,Toward no heart disease,0.0
+numeric__thalachh categorical__ca_2,Maximum Heart Rate x Number of Major Vessels = 2,Toward no heart disease,0.0
+numeric__thalachh categorical__ca_0,Maximum Heart Rate x Number of Major Vessels = 0,Toward no heart disease,0.0
+numeric__thalachh categorical__slope_3,Maximum Heart Rate x ST Slope = 3,Toward no heart disease,0.0
+numeric__thalachh categorical__slope_1,Maximum Heart Rate x ST Slope = 1 (Flat),Toward no heart disease,0.0
+numeric__thalachh categorical__slope_0,Maximum Heart Rate x ST Slope = 0 (Upsloping),Toward no heart disease,0.0
+numeric__thalachh categorical__restecg_2,Maximum Heart Rate x Resting ECG Result = 2 (Left ventricular hypertrophy),Toward no heart disease,0.0
+numeric__thalachh categorical__cp_3,Maximum Heart Rate x Chest Pain Type = 3 (Asymptomatic),Toward no heart disease,0.0
+numeric__chol categorical__thal_3,Cholesterol x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,0.0
+numeric__thalachh categorical__thal_3,Maximum Heart Rate x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,0.0
+numeric__chol categorical__thal_0,Cholesterol x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+numeric__chol categorical__ca_4,Cholesterol x Number of Major Vessels = 4,Toward no heart disease,0.0
+numeric__chol categorical__ca_3,Cholesterol x Number of Major Vessels = 3,Toward no heart disease,0.0
+numeric__chol categorical__ca_2,Cholesterol x Number of Major Vessels = 2,Toward no heart disease,0.0
+numeric__chol categorical__slope_3,Cholesterol x ST Slope = 3,Toward no heart disease,0.0
+numeric__chol categorical__slope_0,Cholesterol x ST Slope = 0 (Upsloping),Toward no heart disease,0.0
+numeric__chol categorical__restecg_1,Cholesterol x Resting ECG Result = 1 (ST-T wave abnormality),Toward no heart disease,0.0
+numeric__chol categorical__cp_1,Cholesterol x Chest Pain Type = 1 (Atypical angina),Toward no heart disease,0.0
+numeric__chol categorical__cp_0,Cholesterol x Chest Pain Type = 0 (Typical angina),Toward no heart disease,0.0
+numeric__trestbps categorical__thal_6,Resting Blood Pressure x Thalassemia Result = 6,Toward no heart disease,0.0
+numeric__thalachh categorical__thal_2,Maximum Heart Rate x Thalassemia Result = 2 (Normal),Toward no heart disease,0.0
+numeric__thalachh categorical__thal_6,Maximum Heart Rate x Thalassemia Result = 6,Toward no heart disease,0.0
+numeric__trestbps categorical__thal_0,Resting Blood Pressure x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+numeric__oldpeak categorical__ca_4,Oldpeak x Number of Major Vessels = 4,Toward no heart disease,0.0
+categorical__sex_0 categorical__ca_1,Sex = 0 (Female) x Number of Major Vessels = 1,Toward no heart disease,0.0
+categorical__sex_0 categorical__slope_3,Sex = 0 (Female) x ST Slope = 3,Toward no heart disease,0.0
+categorical__sex_0 categorical__slope_1,Sex = 0 (Female) x ST Slope = 1 (Flat),Toward no heart disease,0.0
+categorical__sex_0 categorical__slope_0,Sex = 0 (Female) x ST Slope = 0 (Upsloping),Toward no heart disease,0.0
+categorical__sex_0 categorical__restecg_2,Sex = 0 (Female) x Resting ECG Result = 2 (Left ventricular hypertrophy),Toward no heart disease,0.0
+categorical__sex_0 categorical__restecg_1,Sex = 0 (Female) x Resting ECG Result = 1 (ST-T wave abnormality),Toward no heart disease,0.0
+categorical__sex_0 categorical__cp_2,Sex = 0 (Female) x Chest Pain Type = 2 (Non-anginal pain),Toward no heart disease,0.0
+categorical__sex_0 categorical__sex_1,Sex = 0 (Female) x Sex = 1 (Male),Toward no heart disease,0.0
+numeric__oldpeak categorical__thal_6,Oldpeak x Thalassemia Result = 6,Toward no heart disease,0.0
+numeric__oldpeak categorical__thal_0,Oldpeak x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+numeric__oldpeak categorical__ca_3,Oldpeak x Number of Major Vessels = 3,Toward no heart disease,0.0
+numeric__thalachh categorical__thal_7,Maximum Heart Rate x Thalassemia Result = 7,Toward no heart disease,0.0
+numeric__oldpeak categorical__ca_1,Oldpeak x Number of Major Vessels = 1,Toward no heart disease,0.0
+numeric__oldpeak categorical__ca_0,Oldpeak x Number of Major Vessels = 0,Toward no heart disease,0.0
+numeric__oldpeak categorical__slope_3,Oldpeak x ST Slope = 3,Toward no heart disease,0.0
+numeric__oldpeak categorical__exang_0,Oldpeak x Exercise-Induced Angina = 0 (No),Toward no heart disease,0.0
+numeric__oldpeak categorical__restecg_1,Oldpeak x Resting ECG Result = 1 (ST-T wave abnormality),Toward no heart disease,0.0
+numeric__oldpeak categorical__restecg_0,Oldpeak x Resting ECG Result = 0 (Normal),Toward no heart disease,0.0
+numeric__oldpeak categorical__fbs_1,Oldpeak x Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl),Toward no heart disease,0.0
+numeric__oldpeak categorical__fbs_0,Oldpeak x Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl),Toward no heart disease,0.0
+numeric__oldpeak categorical__cp_0,Oldpeak x Chest Pain Type = 0 (Typical angina),Toward no heart disease,0.0
+numeric__oldpeak categorical__sex_0,Oldpeak x Sex = 0 (Female),Toward no heart disease,0.0
+numeric__trestbps categorical__thal_2,Resting Blood Pressure x Thalassemia Result = 2 (Normal),Toward no heart disease,0.0
+numeric__trestbps categorical__ca_4,Resting Blood Pressure x Number of Major Vessels = 4,Toward no heart disease,0.0
+categorical__sex_0 categorical__ca_4,Sex = 0 (Female) x Number of Major Vessels = 4,Toward no heart disease,0.0
+categorical__restecg_0,Resting ECG Result = 0 (Normal),Toward no heart disease,0.0
 categorical__ca_2,Number of Major Vessels = 2,Toward no heart disease,0.0
-numeric__oldpeak,Oldpeak,Toward no heart disease,0.0
-categorical__fbs_1,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl),Toward no heart disease,0.0
+categorical__ca_1,Number of Major Vessels = 1,Toward no heart disease,0.0
+categorical__ca_0,Number of Major Vessels = 0,Toward no heart disease,0.0
 categorical__slope_3,ST Slope = 3,Toward no heart disease,0.0
-categorical__sex_0,Sex = 0 (Female),Toward no heart disease,0.0
-categorical__sex_1,Sex = 1 (Male),Toward no heart disease,0.0
+categorical__slope_1,ST Slope = 1 (Flat),Toward no heart disease,0.0
 categorical__slope_0,ST Slope = 0 (Upsloping),Toward no heart disease,0.0
 categorical__exang_1,Exercise-Induced Angina = 1 (Yes),Toward no heart disease,0.0
-numeric__trestbps,Resting Blood Pressure,Toward no heart disease,0.0
+categorical__exang_0,Exercise-Induced Angina = 0 (No),Toward no heart disease,0.0
 categorical__restecg_2,Resting ECG Result = 2 (Left ventricular hypertrophy),Toward no heart disease,0.0
+categorical__restecg_1,Resting ECG Result = 1 (ST-T wave abnormality),Toward no heart disease,0.0
+categorical__fbs_1,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl),Toward no heart disease,0.0
+categorical__ca_4,Number of Major Vessels = 4,Toward no heart disease,0.0
+categorical__fbs_0,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl),Toward no heart disease,0.0
+categorical__cp_3,Chest Pain Type = 3 (Asymptomatic),Toward no heart disease,0.0
+categorical__cp_2,Chest Pain Type = 2 (Non-anginal pain),Toward no heart disease,0.0
 categorical__cp_1,Chest Pain Type = 1 (Atypical angina),Toward no heart disease,0.0
-numeric__age,Age,Toward no heart disease,0.0
+categorical__cp_0,Chest Pain Type = 0 (Typical angina),Toward no heart disease,0.0
+categorical__sex_1,Sex = 1 (Male),Toward no heart disease,0.0
+categorical__sex_0,Sex = 0 (Female),Toward no heart disease,0.0
+numeric__oldpeak,Oldpeak,Toward no heart disease,0.0
+numeric__thalachh,Maximum Heart Rate,Toward no heart disease,0.0
+numeric__chol,Cholesterol,Toward no heart disease,0.0
+categorical__ca_3,Number of Major Vessels = 3,Toward no heart disease,0.0
+categorical__thal_0,Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+numeric__trestbps categorical__ca_3,Resting Blood Pressure x Number of Major Vessels = 3,Toward no heart disease,0.0
+numeric__age categorical__ca_2,Age x Number of Major Vessels = 2,Toward no heart disease,0.0
+numeric__trestbps categorical__ca_1,Resting Blood Pressure x Number of Major Vessels = 1,Toward no heart disease,0.0
+numeric__trestbps categorical__ca_0,Resting Blood Pressure x Number of Major Vessels = 0,Toward no heart disease,0.0
+numeric__trestbps categorical__restecg_0,Resting Blood Pressure x Resting ECG Result = 0 (Normal),Toward no heart disease,0.0
+numeric__trestbps categorical__sex_1,Resting Blood Pressure x Sex = 1 (Male),Toward no heart disease,0.0
+numeric__age categorical__thal_6,Age x Thalassemia Result = 6,Toward no heart disease,0.0
+numeric__age categorical__thal_2,Age x Thalassemia Result = 2 (Normal),Toward no heart disease,0.0
+numeric__age categorical__thal_1,Age x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+numeric__age categorical__thal_0,Age x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+numeric__age categorical__ca_4,Age x Number of Major Vessels = 4,Toward no heart disease,0.0
+numeric__age categorical__ca_3,Age x Number of Major Vessels = 3,Toward no heart disease,0.0
+numeric__age categorical__ca_0,Age x Number of Major Vessels = 0,Toward no heart disease,0.0
+categorical__thal_1,Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+numeric__age categorical__slope_3,Age x ST Slope = 3,Toward no heart disease,0.0
+numeric__age categorical__slope_1,Age x ST Slope = 1 (Flat),Toward no heart disease,0.0
+numeric__age categorical__slope_0,Age x ST Slope = 0 (Upsloping),Toward no heart disease,0.0
+numeric__age categorical__exang_1,Age x Exercise-Induced Angina = 1 (Yes),Toward no heart disease,0.0
+numeric__age categorical__fbs_1,Age x Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl),Toward no heart disease,0.0
+numeric__age categorical__cp_3,Age x Chest Pain Type = 3 (Asymptomatic),Toward no heart disease,0.0
+numeric__age categorical__sex_1,Age x Sex = 1 (Male),Toward no heart disease,0.0
+categorical__thal_7,Thalassemia Result = 7,Toward no heart disease,0.0
+categorical__thal_6,Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__thal_2,Thalassemia Result = 2 (Normal),Toward no heart disease,0.0
+categorical__sex_0 categorical__ca_3,Sex = 0 (Female) x Number of Major Vessels = 3,Toward no heart disease,0.0
+categorical__sex_0 categorical__thal_0,Sex = 0 (Female) x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__fbs_0 categorical__thal_6,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl) x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__cp_2 categorical__slope_1,Chest Pain Type = 2 (Non-anginal pain) x ST Slope = 1 (Flat),Toward no heart disease,0.0
+categorical__cp_3 categorical__fbs_0,Chest Pain Type = 3 (Asymptomatic) x Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl),Toward no heart disease,0.0
+categorical__cp_2 categorical__thal_7,Chest Pain Type = 2 (Non-anginal pain) x Thalassemia Result = 7,Toward no heart disease,0.0
+categorical__cp_2 categorical__thal_6,Chest Pain Type = 2 (Non-anginal pain) x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__cp_2 categorical__thal_3,Chest Pain Type = 2 (Non-anginal pain) x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,0.0
+categorical__cp_2 categorical__thal_2,Chest Pain Type = 2 (Non-anginal pain) x Thalassemia Result = 2 (Normal),Toward no heart disease,0.0
+categorical__cp_2 categorical__thal_1,Chest Pain Type = 2 (Non-anginal pain) x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__cp_2 categorical__thal_0,Chest Pain Type = 2 (Non-anginal pain) x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__cp_2 categorical__ca_4,Chest Pain Type = 2 (Non-anginal pain) x Number of Major Vessels = 4,Toward no heart disease,0.0
+categorical__cp_2 categorical__ca_3,Chest Pain Type = 2 (Non-anginal pain) x Number of Major Vessels = 3,Toward no heart disease,0.0
+categorical__cp_2 categorical__ca_2,Chest Pain Type = 2 (Non-anginal pain) x Number of Major Vessels = 2,Toward no heart disease,0.0
+categorical__cp_2 categorical__slope_0,Chest Pain Type = 2 (Non-anginal pain) x ST Slope = 0 (Upsloping),Toward no heart disease,0.0
+categorical__cp_3 categorical__exang_0,Chest Pain Type = 3 (Asymptomatic) x Exercise-Induced Angina = 0 (No),Toward no heart disease,0.0
+categorical__cp_2 categorical__exang_1,Chest Pain Type = 2 (Non-anginal pain) x Exercise-Induced Angina = 1 (Yes),Toward no heart disease,0.0
+categorical__cp_2 categorical__restecg_1,Chest Pain Type = 2 (Non-anginal pain) x Resting ECG Result = 1 (ST-T wave abnormality),Toward no heart disease,0.0
+categorical__cp_2 categorical__restecg_0,Chest Pain Type = 2 (Non-anginal pain) x Resting ECG Result = 0 (Normal),Toward no heart disease,0.0
+categorical__cp_2 categorical__fbs_0,Chest Pain Type = 2 (Non-anginal pain) x Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl),Toward no heart disease,0.0
+categorical__cp_2 categorical__cp_3,Chest Pain Type = 2 (Non-anginal pain) x Chest Pain Type = 3 (Asymptomatic),Toward no heart disease,0.0
+categorical__cp_1 categorical__thal_7,Chest Pain Type = 1 (Atypical angina) x Thalassemia Result = 7,Toward no heart disease,0.0
+categorical__cp_1 categorical__thal_6,Chest Pain Type = 1 (Atypical angina) x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__cp_1 categorical__thal_2,Chest Pain Type = 1 (Atypical angina) x Thalassemia Result = 2 (Normal),Toward no heart disease,0.0
+numeric__trestbps,Resting Blood Pressure,Toward no heart disease,0.0
+categorical__cp_1 categorical__thal_0,Chest Pain Type = 1 (Atypical angina) x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__cp_3 categorical__restecg_2,Chest Pain Type = 3 (Asymptomatic) x Resting ECG Result = 2 (Left ventricular hypertrophy),Toward no heart disease,0.0
+categorical__cp_3 categorical__slope_0,Chest Pain Type = 3 (Asymptomatic) x ST Slope = 0 (Upsloping),Toward no heart disease,0.0
+categorical__cp_1 categorical__ca_3,Chest Pain Type = 1 (Atypical angina) x Number of Major Vessels = 3,Toward no heart disease,0.0
+categorical__fbs_0 categorical__slope_0,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl) x ST Slope = 0 (Upsloping),Toward no heart disease,0.0
+categorical__fbs_0 categorical__thal_3,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl) x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,0.0
+categorical__fbs_0 categorical__thal_2,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl) x Thalassemia Result = 2 (Normal),Toward no heart disease,0.0
+categorical__fbs_0 categorical__thal_1,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl) x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__fbs_0 categorical__thal_0,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl) x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__fbs_0 categorical__ca_2,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl) x Number of Major Vessels = 2,Toward no heart disease,0.0
+categorical__fbs_0 categorical__ca_1,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl) x Number of Major Vessels = 1,Toward no heart disease,0.0
+categorical__fbs_0 categorical__ca_0,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl) x Number of Major Vessels = 0,Toward no heart disease,0.0
+categorical__fbs_0 categorical__slope_3,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl) x ST Slope = 3,Toward no heart disease,0.0
+categorical__fbs_0 categorical__slope_2,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl) x ST Slope = 2 (Downsloping),Toward no heart disease,0.0
+categorical__fbs_0 categorical__slope_1,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl) x ST Slope = 1 (Flat),Toward no heart disease,0.0
+categorical__fbs_0 categorical__exang_0,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl) x Exercise-Induced Angina = 0 (No),Toward no heart disease,0.0
+categorical__cp_3 categorical__slope_2,Chest Pain Type = 3 (Asymptomatic) x ST Slope = 2 (Downsloping),Toward no heart disease,0.0
+categorical__fbs_0 categorical__restecg_2,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl) x Resting ECG Result = 2 (Left ventricular hypertrophy),Toward no heart disease,0.0
+categorical__fbs_0 categorical__restecg_0,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl) x Resting ECG Result = 0 (Normal),Toward no heart disease,0.0
+categorical__fbs_0 categorical__fbs_1,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl) x Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl),Toward no heart disease,0.0
+categorical__cp_3 categorical__thal_6,Chest Pain Type = 3 (Asymptomatic) x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__cp_3 categorical__thal_1,Chest Pain Type = 3 (Asymptomatic) x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__cp_3 categorical__thal_0,Chest Pain Type = 3 (Asymptomatic) x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__cp_3 categorical__ca_4,Chest Pain Type = 3 (Asymptomatic) x Number of Major Vessels = 4,Toward no heart disease,0.0
+categorical__cp_3 categorical__ca_3,Chest Pain Type = 3 (Asymptomatic) x Number of Major Vessels = 3,Toward no heart disease,0.0
+categorical__cp_3 categorical__ca_2,Chest Pain Type = 3 (Asymptomatic) x Number of Major Vessels = 2,Toward no heart disease,0.0
+categorical__cp_3 categorical__slope_3,Chest Pain Type = 3 (Asymptomatic) x ST Slope = 3,Toward no heart disease,0.0
+categorical__cp_1 categorical__ca_4,Chest Pain Type = 1 (Atypical angina) x Number of Major Vessels = 4,Toward no heart disease,0.0
+categorical__cp_1 categorical__ca_2,Chest Pain Type = 1 (Atypical angina) x Number of Major Vessels = 2,Toward no heart disease,0.0
+categorical__sex_0 categorical__thal_1,Sex = 0 (Female) x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__sex_1 categorical__slope_2,Sex = 1 (Male) x ST Slope = 2 (Downsloping),Toward no heart disease,0.0
+categorical__cp_0 categorical__cp_1,Chest Pain Type = 0 (Typical angina) x Chest Pain Type = 1 (Atypical angina),Toward no heart disease,0.0
+categorical__sex_1 categorical__thal_6,Sex = 1 (Male) x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__sex_1 categorical__thal_3,Sex = 1 (Male) x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,0.0
+categorical__sex_1 categorical__thal_2,Sex = 1 (Male) x Thalassemia Result = 2 (Normal),Toward no heart disease,0.0
+categorical__sex_1 categorical__thal_1,Sex = 1 (Male) x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__sex_1 categorical__thal_0,Sex = 1 (Male) x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__sex_1 categorical__ca_3,Sex = 1 (Male) x Number of Major Vessels = 3,Toward no heart disease,0.0
+categorical__sex_1 categorical__ca_1,Sex = 1 (Male) x Number of Major Vessels = 1,Toward no heart disease,0.0
+categorical__sex_1 categorical__ca_0,Sex = 1 (Male) x Number of Major Vessels = 0,Toward no heart disease,0.0
+categorical__sex_1 categorical__slope_3,Sex = 1 (Male) x ST Slope = 3,Toward no heart disease,0.0
+categorical__sex_1 categorical__slope_1,Sex = 1 (Male) x ST Slope = 1 (Flat),Toward no heart disease,0.0
+categorical__cp_0 categorical__cp_3,Chest Pain Type = 0 (Typical angina) x Chest Pain Type = 3 (Asymptomatic),Toward no heart disease,0.0
+categorical__sex_1 categorical__slope_0,Sex = 1 (Male) x ST Slope = 0 (Upsloping),Toward no heart disease,0.0
+categorical__sex_1 categorical__restecg_2,Sex = 1 (Male) x Resting ECG Result = 2 (Left ventricular hypertrophy),Toward no heart disease,0.0
+categorical__sex_1 categorical__restecg_1,Sex = 1 (Male) x Resting ECG Result = 1 (ST-T wave abnormality),Toward no heart disease,0.0
+categorical__sex_1 categorical__restecg_0,Sex = 1 (Male) x Resting ECG Result = 0 (Normal),Toward no heart disease,0.0
+categorical__sex_1 categorical__fbs_0,Sex = 1 (Male) x Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl),Toward no heart disease,0.0
+categorical__sex_1 categorical__cp_3,Sex = 1 (Male) x Chest Pain Type = 3 (Asymptomatic),Toward no heart disease,0.0
+categorical__sex_1 categorical__cp_1,Sex = 1 (Male) x Chest Pain Type = 1 (Atypical angina),Toward no heart disease,0.0
+categorical__sex_1 categorical__cp_0,Sex = 1 (Male) x Chest Pain Type = 0 (Typical angina),Toward no heart disease,0.0
+categorical__sex_0 categorical__thal_7,Sex = 0 (Female) x Thalassemia Result = 7,Toward no heart disease,0.0
+categorical__sex_0 categorical__thal_6,Sex = 0 (Female) x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__cp_0 categorical__cp_2,Chest Pain Type = 0 (Typical angina) x Chest Pain Type = 2 (Non-anginal pain),Toward no heart disease,0.0
+categorical__cp_0 categorical__fbs_0,Chest Pain Type = 0 (Typical angina) x Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl),Toward no heart disease,0.0
+categorical__cp_1 categorical__ca_0,Chest Pain Type = 1 (Atypical angina) x Number of Major Vessels = 0,Toward no heart disease,0.0
+categorical__cp_0 categorical__thal_1,Chest Pain Type = 0 (Typical angina) x Thalassemia Result = 1 (Fixed defect),Toward no heart disease,0.0
+categorical__cp_1 categorical__slope_3,Chest Pain Type = 1 (Atypical angina) x ST Slope = 3,Toward no heart disease,0.0
+categorical__cp_1 categorical__slope_0,Chest Pain Type = 1 (Atypical angina) x ST Slope = 0 (Upsloping),Toward no heart disease,0.0
+categorical__cp_1 categorical__exang_0,Chest Pain Type = 1 (Atypical angina) x Exercise-Induced Angina = 0 (No),Toward no heart disease,0.0
+categorical__cp_1 categorical__restecg_2,Chest Pain Type = 1 (Atypical angina) x Resting ECG Result = 2 (Left ventricular hypertrophy),Toward no heart disease,0.0
+categorical__cp_1 categorical__restecg_1,Chest Pain Type = 1 (Atypical angina) x Resting ECG Result = 1 (ST-T wave abnormality),Toward no heart disease,0.0
+categorical__cp_1 categorical__fbs_1,Chest Pain Type = 1 (Atypical angina) x Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl),Toward no heart disease,0.0
+categorical__cp_1 categorical__cp_3,Chest Pain Type = 1 (Atypical angina) x Chest Pain Type = 3 (Asymptomatic),Toward no heart disease,0.0
+categorical__cp_1 categorical__cp_2,Chest Pain Type = 1 (Atypical angina) x Chest Pain Type = 2 (Non-anginal pain),Toward no heart disease,0.0
+categorical__cp_0 categorical__thal_6,Chest Pain Type = 0 (Typical angina) x Thalassemia Result = 6,Toward no heart disease,0.0
+categorical__cp_0 categorical__thal_3,Chest Pain Type = 0 (Typical angina) x Thalassemia Result = 3 (Reversible defect),Toward no heart disease,0.0
+categorical__cp_0 categorical__thal_0,Chest Pain Type = 0 (Typical angina) x Thalassemia Result = 0 (Unknown),Toward no heart disease,0.0
+categorical__cp_0 categorical__restecg_1,Chest Pain Type = 0 (Typical angina) x Resting ECG Result = 1 (ST-T wave abnormality),Toward no heart disease,0.0
+categorical__cp_0 categorical__ca_4,Chest Pain Type = 0 (Typical angina) x Number of Major Vessels = 4,Toward no heart disease,0.0
+categorical__cp_0 categorical__ca_3,Chest Pain Type = 0 (Typical angina) x Number of Major Vessels = 3,Toward no heart disease,0.0
+categorical__cp_0 categorical__ca_2,Chest Pain Type = 0 (Typical angina) x Number of Major Vessels = 2,Toward no heart disease,0.0
+categorical__cp_0 categorical__ca_1,Chest Pain Type = 0 (Typical angina) x Number of Major Vessels = 1,Toward no heart disease,0.0
+categorical__cp_0 categorical__slope_3,Chest Pain Type = 0 (Typical angina) x ST Slope = 3,Toward no heart disease,0.0
+categorical__cp_0 categorical__slope_2,Chest Pain Type = 0 (Typical angina) x ST Slope = 2 (Downsloping),Toward no heart disease,0.0
+categorical__cp_0 categorical__slope_1,Chest Pain Type = 0 (Typical angina) x ST Slope = 1 (Flat),Toward no heart disease,0.0
+categorical__cp_0 categorical__slope_0,Chest Pain Type = 0 (Typical angina) x ST Slope = 0 (Upsloping),Toward no heart disease,0.0
+categorical__cp_0 categorical__exang_0,Chest Pain Type = 0 (Typical angina) x Exercise-Induced Angina = 0 (No),Toward no heart disease,0.0
+categorical__cp_0 categorical__restecg_2,Chest Pain Type = 0 (Typical angina) x Resting ECG Result = 2 (Left ventricular hypertrophy),Toward no heart disease,0.0
+categorical__thal_6 categorical__thal_7,Thalassemia Result = 6 x Thalassemia Result = 7,Toward no heart disease,0.0

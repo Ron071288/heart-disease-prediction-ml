@@ -91,7 +91,7 @@ CATEGORY_LABELS = {
 
 LOGISTIC_MODEL_NAME = "Logistic Regression"
 BEST_MODEL_NAME = LOGISTIC_MODEL_NAME
-FINAL_LOGISTIC_VARIANT = "Tuned Logistic Regression"
+FINAL_LOGISTIC_VARIANT = "Tuned Logistic Regression + Interaction Features"
 
 
 MODEL_OPTIONS = {
@@ -322,7 +322,7 @@ def evaluate_predictions(y_true: pd.Series, y_pred: np.ndarray) -> dict[str, Any
 def train_models(
     df: pd.DataFrame,
     selected_models: list[str] | None = None,
-    drop_duplicates: bool = True,
+    drop_duplicates: bool = False,
 ) -> tuple[dict[str, Pipeline], dict[str, dict[str, Any]], pd.DataFrame, pd.Series]:
     cleaned = clean_dataset(df, drop_duplicates=drop_duplicates)
     X, y = split_features_target(cleaned)
@@ -450,6 +450,13 @@ def logistic_regression_coefficients(model: Pipeline) -> pd.DataFrame:
 
 
 def readable_feature_name(raw_feature_name: str) -> str:
+    if " " in raw_feature_name:
+        readable_parts = [
+            readable_feature_name(part)
+            for part in raw_feature_name.split(" ")
+        ]
+        return " x ".join(readable_parts)
+
     feature_name = raw_feature_name
     for prefix in ("numeric__", "categorical__"):
         if feature_name.startswith(prefix):
