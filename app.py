@@ -201,16 +201,16 @@ with st.expander("Model Analysis and Charts", expanded=False):
     st.write("Dataset analysis")
     metric_columns = st.columns(4)
     metric_columns[0].metric("Raw samples", analysis["raw_rows"])
-    metric_columns[1].metric("Duplicate rows found", analysis["duplicates"])
-    metric_columns[2].metric("Unique rows", analysis["deduplicated_rows"])
+    metric_columns[1].metric("Duplicates removed", analysis["duplicates"])
+    metric_columns[2].metric("Training samples", analysis["deduplicated_rows"])
     metric_columns[3].metric(
-        "Raw class balance",
-        f"{analysis['raw_no_heart_disease']} / {analysis['raw_heart_disease']}",
+        "Training class balance",
+        f"{analysis['deduplicated_no_heart_disease']} / {analysis['deduplicated_heart_disease']}",
         help="No heart disease / Heart disease",
     )
     st.caption(
-        "The interaction-feature backend uses the Kaggle-provided dataset after validation, "
-        "so the model can learn combined feature patterns."
+        "Exact duplicate rows are removed before training, then interaction features are added "
+        "to learn combined feature patterns."
     )
 
     st.write("Backend model performance")

@@ -66,16 +66,16 @@ def main() -> None:
         f"{analysis['deduplicated_no_heart_disease']} no heart disease, "
         f"{analysis['deduplicated_heart_disease']} heart disease"
     )
-    print("Training uses the Kaggle-provided dataset after validation so interaction patterns can be learned.")
+    print("Exact duplicate rows are removed before training to keep evaluation fair.")
     print()
 
     print("2. PREPROCESSING")
     print("-" * 72)
     print(
-        "Data validation -> 80/20 train-test split -> scaling + one-hot encoding "
+        "Duplicate removal -> 80/20 train-test split -> scaling + one-hot encoding "
         "-> interaction features"
     )
-    print(f"Final model: {FINAL_LOGISTIC_VARIANT} (C=10, L1 regularization)")
+    print(f"Final model: {FINAL_LOGISTIC_VARIANT} (C=0.3, L1 regularization)")
     print("Interaction features combine two existing inputs so Logistic Regression can learn their joint effect.")
     print()
 

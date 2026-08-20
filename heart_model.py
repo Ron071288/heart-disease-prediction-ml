@@ -126,7 +126,7 @@ LOGISTIC_VARIANTS = {
     },
     "Tuned Logistic Regression + Interaction Features": {
         "classifier": LogisticRegression(
-            C=10,
+            C=0.3,
             penalty="l1",
             solver="liblinear",
             max_iter=20000,
@@ -322,7 +322,7 @@ def evaluate_predictions(y_true: pd.Series, y_pred: np.ndarray) -> dict[str, Any
 def train_models(
     df: pd.DataFrame,
     selected_models: list[str] | None = None,
-    drop_duplicates: bool = False,
+    drop_duplicates: bool = True,
 ) -> tuple[dict[str, Pipeline], dict[str, dict[str, Any]], pd.DataFrame, pd.Series]:
     cleaned = clean_dataset(df, drop_duplicates=drop_duplicates)
     X, y = split_features_target(cleaned)
