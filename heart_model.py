@@ -449,6 +449,48 @@ def logistic_regression_coefficients(model: Pipeline) -> pd.DataFrame:
     )
 
 
+def patient_prediction_contributions(
+    model: Pipeline,
+    patient_input: pd.DataFrame,
+    top_n: int = 10,
+) -> pd.DataFrame:
+    classifier = model.named_steps["classifier"]
+    if not hasattr(classifier, "coef_"):
+        raise ValueError("Selected model does not expose coefficients.")
+
+    transformed = model.named_steps["preprocessor"].transform(patient_input)
+    feature_names = model.named_steps["preprocessor"].get_feature_names_out()
+
+    if "interactions" in model.named_steps:
+        transformed = model.named_steps["interactions"].transform(transformed)
+        feature_names = model.named_steps["interactions"].get_feature_names_out(
+            feature_names
+        )
+
+    values = np.asarray(transformed).reshape(-1)
+    coefficients = classifier.coef_[0]
+    contributions = values * coefficients
+
+    table = pd.DataFrame(
+        {
+            "Feature": [readable_feature_name(name) for name in feature_names],
+            "Input Effect": [
+                "Pushes toward heart disease" if value > 0 else "Pushes toward no heart disease"
+                for value in contributions
+            ],
+            "Contribution": contributions,
+            "AbsContribution": np.abs(contributions),
+        }
+    )
+    table = table[table["AbsContribution"] > 0]
+    return (
+        table.sort_values("AbsContribution", ascending=False)
+        .head(top_n)
+        .drop(columns=["AbsContribution"])
+        .reset_index(drop=True)
+    )
+
+
 def readable_feature_name(raw_feature_name: str) -> str:
     if " " in raw_feature_name:
         readable_parts = [

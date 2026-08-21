@@ -11,6 +11,7 @@ from heart_model import (
     load_dataset,
     logistic_regression_coefficients,
     metrics_to_table,
+    patient_prediction_contributions,
     train_models,
 )
 from heart_visuals import (
@@ -192,6 +193,17 @@ if st.button("Predict Heart Disease", type="primary"):
 
     st.write("Frontend selected model:", selected_frontend_model)
     st.write("Backend prediction model:", FINAL_LOGISTIC_VARIANT)
+    st.write("Top factors affecting this prediction")
+    contribution_table = patient_prediction_contributions(model, patient_input)
+    st.dataframe(
+        contribution_table,
+        width="stretch",
+        hide_index=True,
+    )
+    st.caption(
+        "Positive contribution pushes the prediction toward heart disease. "
+        "Negative contribution pushes it toward no heart disease."
+    )
     st.write("Patient input")
     st.dataframe(patient_input, width="stretch")
 
