@@ -39,6 +39,47 @@ def create_metrics_chart(metric_table: pd.DataFrame):
     return fig
 
 
+def create_model_comparison_chart(metric_table: pd.DataFrame):
+    metrics = ["Accuracy", "Precision", "Recall", "F1-score"]
+    models = metric_table["Model"].tolist()
+    x = np.arange(len(metrics))
+    width = 0.8 / max(len(models), 1)
+
+    fig, ax = plt.subplots(figsize=(9.5, 4.8))
+    colors = ["#2563eb", "#dc2626", "#16a34a", "#9333ea"]
+
+    for index, model_name in enumerate(models):
+        row = metric_table[metric_table["Model"] == model_name].iloc[0]
+        values = [float(row[metric]) * 100 for metric in metrics]
+        offset = (index - (len(models) - 1) / 2) * width
+        bars = ax.bar(
+            x + offset,
+            values,
+            width,
+            label=model_name,
+            color=colors[index % len(colors)],
+        )
+        for bar, value in zip(bars, values):
+            ax.text(
+                bar.get_x() + bar.get_width() / 2,
+                bar.get_height() + 1,
+                f"{value:.1f}%",
+                ha="center",
+                va="bottom",
+                fontsize=8,
+            )
+
+    ax.set_title("Model Performance Comparison")
+    ax.set_ylabel("Score (%)")
+    ax.set_xticks(x, metrics)
+    ax.set_ylim(0, 105)
+    ax.grid(axis="y", linestyle="--", alpha=0.35)
+    ax.legend(loc="lower center", bbox_to_anchor=(0.5, -0.28), ncol=2)
+
+    fig.tight_layout()
+    return fig
+
+
 def create_confusion_matrix_chart(confusion_matrix: list[list[int]]):
     matrix = np.array(confusion_matrix)
     labels = ["No Disease", "Disease"]
@@ -126,6 +167,7 @@ def save_visualizations(
     output_path.mkdir(parents=True, exist_ok=True)
 
     charts = {
+        "model_comparison_chart.png": create_model_comparison_chart(metric_table),
         "metrics_chart.png": create_metrics_chart(metric_table),
         "confusion_matrix.png": create_confusion_matrix_chart(confusion_matrix),
         "feature_coefficients.png": create_feature_coefficient_chart(coefficients),

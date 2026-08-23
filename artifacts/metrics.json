@@ -1,19 +1,36 @@
 {
   "Logistic Regression": {
-    "accuracy": 0.9523809523809523,
-    "precision": 0.9635416666666666,
-    "recall": 0.9438775510204082,
-    "f1_score": 0.9536082474226805,
+    "accuracy": 0.8925619834710744,
+    "precision": 0.8709677419354839,
+    "recall": 0.9152542372881356,
+    "f1_score": 0.8925619834710744,
     "confusion_matrix": [
       [
-        175,
+        54,
+        8
+      ],
+      [
+        5,
+        54
+      ]
+    ],
+    "classification_report": "                  precision    recall  f1-score   support\n\nNo Heart Disease       0.92      0.87      0.89        62\n   Heart Disease       0.87      0.92      0.89        59\n\n        accuracy                           0.89       121\n       macro avg       0.89      0.89      0.89       121\n    weighted avg       0.89      0.89      0.89       121\n"
+  },
+  "Random Forest": {
+    "accuracy": 0.8925619834710744,
+    "precision": 0.8833333333333333,
+    "recall": 0.8983050847457628,
+    "f1_score": 0.8907563025210085,
+    "confusion_matrix": [
+      [
+        55,
         7
       ],
       [
-        11,
-        185
+        6,
+        53
       ]
     ],
-    "classification_report": "                  precision    recall  f1-score   support\n\nNo Heart Disease       0.94      0.96      0.95       182\n   Heart Disease       0.96      0.94      0.95       196\n\n        accuracy                           0.95       378\n       macro avg       0.95      0.95      0.95       378\n    weighted avg       0.95      0.95      0.95       378\n"
+    "classification_report": "                  precision    recall  f1-score   support\n\nNo Heart Disease       0.90      0.89      0.89        62\n   Heart Disease       0.88      0.90      0.89        59\n\n        accuracy                           0.89       121\n       macro avg       0.89      0.89      0.89       121\n    weighted avg       0.89      0.89      0.89       121\n"
   }
 }

@@ -79,15 +79,17 @@ def main() -> None:
     print("Interaction features combine two existing inputs so Logistic Regression can learn their joint effect.")
     print()
 
-    models, metrics, _, _ = train_models(df, selected_models=[LOGISTIC_MODEL_NAME])
+    models, metrics, _, _ = train_models(df)
     comparison = metrics_to_table(metrics)
 
-    print("3. FINAL RESULT")
+    print("3. MODEL COMPARISON")
     print("-" * 72)
     print(comparison.to_string(index=False))
 
     logistic_metrics = metrics[LOGISTIC_MODEL_NAME]
     print()
+    print("4. LOGISTIC REGRESSION RESULT")
+    print("-" * 72)
     print(f"Accuracy : {logistic_metrics['accuracy']:.4f}")
     print(f"Precision: {logistic_metrics['precision']:.4f}")
     print(f"Recall   : {logistic_metrics['recall']:.4f}")
@@ -103,7 +105,7 @@ def main() -> None:
     print(f"True Positive  (correct heart disease): {tp}")
     print()
 
-    print("4. TOP INFLUENTIAL FEATURES")
+    print("5. TOP INFLUENTIAL FEATURES")
     print("-" * 72)
     print("Sorted from strongest to weakest effect.")
     print("Positive direction = increases heart disease probability.")
@@ -130,10 +132,11 @@ def main() -> None:
         coefficients,
         output_dir,
     )
-    print("5. OUTPUT")
+    print("6. OUTPUT")
     print("-" * 72)
     print(f"Artifacts saved to: {output_dir.resolve()}")
     print("Charts saved:")
+    print("- model_comparison_chart.png")
     print("- metrics_chart.png")
     print("- confusion_matrix.png")
     print("- feature_coefficients.png")

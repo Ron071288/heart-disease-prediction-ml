@@ -19,6 +19,7 @@ from heart_visuals import (
     create_confusion_matrix_chart,
     create_feature_coefficient_chart,
     create_feature_importance_chart,
+    create_model_comparison_chart,
     create_metrics_chart,
 )
 
@@ -259,6 +260,7 @@ with st.expander("Model Analysis and Charts", expanded=False):
 
     st.write("Model comparison table")
     st.dataframe(metric_table, width="stretch", hide_index=True)
+    st.pyplot(create_model_comparison_chart(metric_table), width="stretch")
 
     if is_model_available and selected_model_name is not None:
         selected_metrics = metrics[selected_model_name]
