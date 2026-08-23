@@ -1,19 +1,19 @@
 {
   "Logistic Regression": {
-    "accuracy": 0.8925619834710744,
-    "precision": 0.8709677419354839,
-    "recall": 0.9152542372881356,
-    "f1_score": 0.8925619834710744,
+    "accuracy": 0.9523809523809523,
+    "precision": 0.9635416666666666,
+    "recall": 0.9438775510204082,
+    "f1_score": 0.9536082474226805,
     "confusion_matrix": [
       [
-        54,
-        8
+        175,
+        7
       ],
       [
-        5,
-        54
+        11,
+        185
       ]
     ],
-    "classification_report": "                  precision    recall  f1-score   support\n\nNo Heart Disease       0.92      0.87      0.89        62\n   Heart Disease       0.87      0.92      0.89        59\n\n        accuracy                           0.89       121\n       macro avg       0.89      0.89      0.89       121\n    weighted avg       0.89      0.89      0.89       121\n"
+    "classification_report": "                  precision    recall  f1-score   support\n\nNo Heart Disease       0.94      0.96      0.95       182\n   Heart Disease       0.96      0.94      0.95       196\n\n        accuracy                           0.95       378\n       macro avg       0.95      0.95      0.95       378\n    weighted avg       0.95      0.95      0.95       378\n"
   }
 }

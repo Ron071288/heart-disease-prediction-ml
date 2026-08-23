@@ -1,0 +1,34 @@
+Raw Feature,Feature,Importance
+categorical__thal_3,Thalassemia Result = 3 (Reversible defect),0.10084004178386571
+categorical__thal_2,Thalassemia Result = 2 (Normal),0.09631275398461865
+categorical__cp_0,Chest Pain Type = 0 (Typical angina),0.08884968169496306
+numeric__thalachh,Maximum Heart Rate,0.07490676404358151
+numeric__oldpeak,Oldpeak,0.07453847827134076
+numeric__age,Age,0.05961596476609186
+categorical__slope_2,ST Slope = 2 (Downsloping),0.05491148410188829
+numeric__chol,Cholesterol,0.05183167855526693
+categorical__ca_0,Number of Major Vessels = 0,0.04920822309623325
+categorical__slope_1,ST Slope = 1 (Flat),0.046222277990357545
+numeric__trestbps,Resting Blood Pressure,0.045590132450148466
+categorical__exang_1,Exercise-Induced Angina = 1 (Yes),0.027415109944186455
+categorical__cp_3,Chest Pain Type = 3 (Asymptomatic),0.02737521740131494
+categorical__exang_0,Exercise-Induced Angina = 0 (No),0.02266578255465222
+categorical__sex_0,Sex = 0 (Female),0.02125635372295298
+categorical__sex_1,Sex = 1 (Male),0.019013136204682365
+categorical__cp_2,Chest Pain Type = 2 (Non-anginal pain),0.01675613718039978
+categorical__restecg_1,Resting ECG Result = 1 (ST-T wave abnormality),0.016131899841161975
+categorical__ca_1,Number of Major Vessels = 1,0.01602030424520805
+categorical__restecg_0,Resting ECG Result = 0 (Normal),0.014041509452267762
+categorical__thal_7,Thalassemia Result = 7,0.01355829467190801
+categorical__ca_2,Number of Major Vessels = 2,0.010253315214322812
+categorical__restecg_2,Resting ECG Result = 2 (Left ventricular hypertrophy),0.009503759212759678
+categorical__fbs_0,Fasting Blood Sugar = 0 (Fasting blood sugar <= 120 mg/dl),0.007180184376299883
+categorical__fbs_1,Fasting Blood Sugar = 1 (Fasting blood sugar > 120 mg/dl),0.00686622621842289
+categorical__cp_1,Chest Pain Type = 1 (Atypical angina),0.006826694788537977
+categorical__ca_3,Number of Major Vessels = 3,0.006304300141441907
+categorical__thal_1,Thalassemia Result = 1 (Fixed defect),0.005764866826667853
+categorical__slope_0,ST Slope = 0 (Upsloping),0.004734432335495836
+categorical__ca_4,Number of Major Vessels = 4,0.002814309815214675
+categorical__thal_6,Thalassemia Result = 6,0.001287430895726992
+categorical__slope_3,ST Slope = 3,0.0007387167097478993
+categorical__thal_0,Thalassemia Result = 0 (Unknown),0.000664537508270992
