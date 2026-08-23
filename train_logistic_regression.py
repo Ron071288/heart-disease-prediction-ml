@@ -5,7 +5,6 @@ import textwrap
 from pathlib import Path
 
 from heart_model import (
-    BEST_MODEL_NAME,
     FINAL_LOGISTIC_VARIANT,
     LOGISTIC_MODEL_NAME,
     dataset_analysis,
@@ -27,7 +26,7 @@ def format_metric_table(table):
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Train and evaluate heart disease prediction models."
+        description="Train and evaluate Logistic Regression heart disease prediction model."
     )
     parser.add_argument(
         "--csv",
@@ -50,7 +49,7 @@ def main() -> None:
     analysis = dataset_analysis(df)
 
     print("=" * 76)
-    print("HEART DISEASE PREDICTION - MODEL COMPARISON")
+    print("HEART DISEASE PREDICTION - LOGISTIC REGRESSION")
     print("=" * 76)
     print()
 
@@ -68,16 +67,16 @@ def main() -> None:
     print("Logistic feature setup   : interaction features + L1 regularization (C=0.3)")
     print()
 
-    models, metrics, _, _ = train_models(df)
+    models, metrics, _, _ = train_models(df, selected_models=[LOGISTIC_MODEL_NAME])
     comparison = metrics_to_table(metrics)
 
-    print("2. MODEL COMPARISON")
+    print("2. LOGISTIC REGRESSION RESULT")
     print("-" * 76)
     print(format_metric_table(comparison).to_string(index=False))
 
     logistic_metrics = metrics[LOGISTIC_MODEL_NAME]
     print()
-    print("3. LOGISTIC REGRESSION DETAIL")
+    print("3. MODEL DETAIL")
     print("-" * 76)
     print(f"Backend model            : {FINAL_LOGISTIC_VARIANT}")
     print(
