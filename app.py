@@ -5,6 +5,7 @@ import streamlit as st
 
 from heart_model import (
     FINAL_LOGISTIC_VARIANT,
+    KNN_MODEL_NAME,
     LOGISTIC_MODEL_NAME,
     RANDOM_FOREST_MODEL_NAME,
     dataset_analysis,
@@ -71,7 +72,7 @@ CATEGORY_DESCRIPTIONS = {
 
 FRONTEND_MODEL_OPTIONS = [
     LOGISTIC_MODEL_NAME,
-    "K-Nearest Neighbors",
+    KNN_MODEL_NAME,
     RANDOM_FOREST_MODEL_NAME,
 ]
 

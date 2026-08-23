@@ -15,6 +15,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import (
     accuracy_score,
     classification_report,
@@ -92,6 +93,7 @@ CATEGORY_LABELS = {
 
 LOGISTIC_MODEL_NAME = "Logistic Regression"
 RANDOM_FOREST_MODEL_NAME = "Random Forest"
+KNN_MODEL_NAME = "K-Nearest Neighbors"
 BEST_MODEL_NAME = LOGISTIC_MODEL_NAME
 FINAL_LOGISTIC_VARIANT = "Tuned Logistic Regression + Interaction Features"
 
@@ -111,6 +113,11 @@ MODEL_OPTIONS = {
         min_samples_leaf=2,
         max_features="sqrt",
         random_state=RANDOM_STATE,
+    ),
+    KNN_MODEL_NAME: KNeighborsClassifier(
+        n_neighbors=11,
+        metric="minkowski",
+        n_jobs=1,
     ),
 }
 
