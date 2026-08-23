@@ -236,3 +236,22 @@ def save_rf_visualizations(
     plt.close(fig_metrics)
     plt.close(fig_cm)
     plt.close(fig_imp)
+
+
+def save_knn_visualizations(
+    metric_table: pd.DataFrame,
+    confusion_matrix: list[list[int]],
+    output_dir: str | Path,
+) -> None:
+    """Save KNN charts (metrics and confusion matrix only — KNN has no feature importances)."""
+    output_path = Path(output_dir)
+    output_path.mkdir(parents=True, exist_ok=True)
+
+    fig_metrics = create_metrics_chart(metric_table)
+    fig_cm = create_confusion_matrix_chart(confusion_matrix)
+
+    fig_metrics.savefig(output_path / "metrics_chart.png", dpi=160, bbox_inches="tight")
+    fig_cm.savefig(output_path / "confusion_matrix.png", dpi=160, bbox_inches="tight")
+
+    plt.close(fig_metrics)
+    plt.close(fig_cm)
