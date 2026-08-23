@@ -12,6 +12,7 @@ import joblib
 import numpy as np
 import pandas as pd
 from sklearn.compose import ColumnTransformer
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
@@ -90,6 +91,7 @@ CATEGORY_LABELS = {
 
 
 LOGISTIC_MODEL_NAME = "Logistic Regression"
+RANDOM_FOREST_MODEL_NAME = "Random Forest"
 BEST_MODEL_NAME = LOGISTIC_MODEL_NAME
 FINAL_LOGISTIC_VARIANT = "Tuned Logistic Regression + Interaction Features"
 
@@ -100,6 +102,14 @@ MODEL_OPTIONS = {
         penalty="l1",
         solver="liblinear",
         max_iter=10000,
+        random_state=RANDOM_STATE,
+    ),
+    RANDOM_FOREST_MODEL_NAME: RandomForestClassifier(
+        n_estimators=200,
+        max_depth=8,
+        min_samples_split=5,
+        min_samples_leaf=2,
+        max_features="sqrt",
         random_state=RANDOM_STATE,
     ),
 }
@@ -474,6 +484,28 @@ def readable_feature_name(raw_feature_name: str) -> str:
     return FEATURE_LABELS.get(feature_name, feature_name)
 
 
+def random_forest_feature_importances(model: Pipeline) -> pd.DataFrame:
+    classifier = model.named_steps["classifier"]
+    if not hasattr(classifier, "feature_importances_"):
+        raise ValueError("Selected model does not expose feature importances.")
+
+    feature_names = model.named_steps["preprocessor"].get_feature_names_out()
+    if "interactions" in model.named_steps:
+        feature_names = model.named_steps["interactions"].get_feature_names_out(
+            feature_names
+        )
+    importances = classifier.feature_importances_
+
+    table = pd.DataFrame(
+        {
+            "Raw Feature": feature_names,
+            "Feature": [readable_feature_name(name) for name in feature_names],
+            "Importance": importances,
+        }
+    )
+    return table.sort_values("Importance", ascending=False)
+
+
 def save_artifacts(
     models: dict[str, Pipeline],
     metrics: dict[str, dict[str, Any]],
@@ -489,6 +521,12 @@ def save_artifacts(
     if "Logistic Regression" in models:
         logistic_regression_coefficients(models["Logistic Regression"]).to_csv(
             out / "logistic_regression_coefficients.csv",
+            index=False,
+        )
+
+    if "Random Forest" in models:
+        random_forest_feature_importances(models["Random Forest"]).to_csv(
+            out / "random_forest_importances.csv",
             index=False,
         )
 

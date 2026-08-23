@@ -7,15 +7,18 @@ from heart_model import (
     BEST_MODEL_NAME,
     FINAL_LOGISTIC_VARIANT,
     LOGISTIC_MODEL_NAME,
+    RANDOM_FOREST_MODEL_NAME,
     dataset_analysis,
     load_dataset,
     logistic_regression_coefficients,
+    random_forest_feature_importances,
     metrics_to_table,
     train_models,
 )
 from heart_visuals import (
     create_confusion_matrix_chart,
     create_feature_coefficient_chart,
+    create_feature_importance_chart,
     create_metrics_chart,
 )
 
@@ -137,7 +140,7 @@ def user_input_form(df: pd.DataFrame) -> pd.DataFrame:
 
 
 st.title("Heart Disease Prediction")
-st.caption("Logistic Regression Backend Prototype with Interaction Features")
+st.caption("Interactive Machine Learning Model Prototype")
 
 with st.sidebar:
     st.header("Dataset")
@@ -157,8 +160,6 @@ except Exception as exc:
 
 analysis = dataset_analysis(df)
 metric_table = metrics_to_table(metrics)
-logistic_metrics = metrics[LOGISTIC_MODEL_NAME]
-coefficient_table = logistic_regression_coefficients(models[LOGISTIC_MODEL_NAME])
 
 st.subheader("Prediction")
 model_column, backend_column = st.columns(2)
@@ -166,34 +167,46 @@ with model_column:
     selected_frontend_model = st.selectbox(
         "Select model",
         options=FRONTEND_MODEL_OPTIONS,
-        help="The frontend is prepared for all group models. The current backend uses Logistic Regression with interaction features.",
+        help="Select a trained machine learning model from the group to perform predictions.",
     )
+
+# Check if selected model is trained/available
+if selected_frontend_model in models:
+    selected_model_name = selected_frontend_model
+    is_model_available = True
+else:
+    is_model_available = False
+
 with backend_column:
-    st.text_input("Backend model currently connected", value=FINAL_LOGISTIC_VARIANT, disabled=True)
+    backend_desc = selected_frontend_model if is_model_available else "Not Implemented"
+    st.text_input("Backend model currently connected", value=backend_desc, disabled=True)
 
 patient_input = user_input_form(df)
 
 if st.button("Predict Heart Disease", type="primary"):
-    model = models[BEST_MODEL_NAME]
-    prediction = int(model.predict(patient_input)[0])
-
-    probability_text = ""
-    if hasattr(model.named_steps["classifier"], "predict_proba"):
-        probability = model.predict_proba(patient_input)[0][1]
-        probability_text = f"Predicted probability of heart disease: {probability:.2%}"
-
-    if prediction == 1:
-        st.error("Prediction result: Heart disease detected")
+    if not is_model_available:
+        st.warning(f"The model '{selected_frontend_model}' has not been trained or integrated yet.")
     else:
-        st.success("Prediction result: No heart disease detected")
+        model = models[selected_model_name]
+        prediction = int(model.predict(patient_input)[0])
 
-    if probability_text:
-        st.info(probability_text)
+        probability_text = ""
+        if hasattr(model.named_steps["classifier"], "predict_proba"):
+            probability = model.predict_proba(patient_input)[0][1]
+            probability_text = f"Predicted probability of heart disease: {probability:.2%}"
 
-    st.write("Frontend selected model:", selected_frontend_model)
-    st.write("Backend prediction model:", FINAL_LOGISTIC_VARIANT)
-    st.write("Patient input")
-    st.dataframe(patient_input, width="stretch")
+        if prediction == 1:
+            st.error("Prediction result: Heart disease detected")
+        else:
+            st.success("Prediction result: No heart disease detected")
+
+        if probability_text:
+            st.info(probability_text)
+
+        st.write("Frontend selected model:", selected_frontend_model)
+        st.write("Backend prediction model:", selected_model_name)
+        st.write("Patient input")
+        st.dataframe(patient_input, use_container_width=True)
 
 st.divider()
 
@@ -209,29 +222,43 @@ with st.expander("Model Analysis and Charts", expanded=False):
         help="No heart disease / Heart disease",
     )
     st.caption(
-        "The interaction-feature backend uses the Kaggle-provided dataset after validation, "
-        "so the model can learn combined feature patterns."
+        "The models use the Kaggle-provided dataset after validation so interaction and feature patterns can be learned."
     )
 
-    st.write("Backend model performance")
-    score_columns = st.columns(4)
-    score_columns[0].metric("Accuracy", f"{logistic_metrics['accuracy']:.2%}")
-    score_columns[1].metric("Precision", f"{logistic_metrics['precision']:.2%}")
-    score_columns[2].metric("Recall", f"{logistic_metrics['recall']:.2%}")
-    score_columns[3].metric("F1-score", f"{logistic_metrics['f1_score']:.2%}")
+    if is_model_available:
+        selected_metrics = metrics[selected_model_name]
+        st.write(f"**{selected_model_name}** performance")
+        score_columns = st.columns(4)
+        score_columns[0].metric("Accuracy", f"{selected_metrics['accuracy']:.2%}")
+        score_columns[1].metric("Precision", f"{selected_metrics['precision']:.2%}")
+        score_columns[2].metric("Recall", f"{selected_metrics['recall']:.2%}")
+        score_columns[3].metric("F1-score", f"{selected_metrics['f1_score']:.2%}")
 
-    left_chart, right_chart = st.columns(2)
-    with left_chart:
-        st.pyplot(create_metrics_chart(metric_table), width="stretch")
-    with right_chart:
-        st.pyplot(
-            create_confusion_matrix_chart(logistic_metrics["confusion_matrix"]),
-            width="stretch",
-        )
-    st.pyplot(
-        create_feature_coefficient_chart(coefficient_table),
-        width="stretch",
-    )
+        left_chart, right_chart = st.columns(2)
+        with left_chart:
+            st.write("Model Comparison Table")
+            st.dataframe(metric_table, use_container_width=True)
+            
+            # Plot the metrics chart filtered to the selected model
+            single_metric_table = metric_table[metric_table["Model"] == selected_model_name]
+            st.pyplot(create_metrics_chart(single_metric_table))
+        with right_chart:
+            st.pyplot(
+                create_confusion_matrix_chart(selected_metrics["confusion_matrix"])
+            )
+        
+        if selected_model_name == LOGISTIC_MODEL_NAME:
+            coefficient_table = logistic_regression_coefficients(models[LOGISTIC_MODEL_NAME])
+            st.pyplot(
+                create_feature_coefficient_chart(coefficient_table)
+            )
+        elif selected_model_name == RANDOM_FOREST_MODEL_NAME:
+            importance_table = random_forest_feature_importances(models[RANDOM_FOREST_MODEL_NAME])
+            st.pyplot(
+                create_feature_importance_chart(importance_table)
+            )
+    else:
+        st.info(f"Please select a trained model (Logistic Regression or Random Forest) to view performance details.")
 
 st.caption(
     "This prototype is for academic demonstration only and is not a medical diagnosis tool."
