@@ -5,7 +5,6 @@ import textwrap
 from pathlib import Path
 
 from heart_model import (
-    BEST_MODEL_NAME,
     RANDOM_FOREST_MODEL_NAME,
     dataset_analysis,
     load_dataset,
@@ -15,6 +14,13 @@ from heart_model import (
     train_models,
 )
 from heart_visuals import save_rf_visualizations
+
+
+def format_metric_table(table):
+    display_table = table.copy()
+    for column in ["Accuracy", "Precision", "Recall", "F1-score"]:
+        display_table[column] = display_table[column].map(lambda value: f"{value * 100:.2f}%")
+    return display_table
 
 
 def parse_args() -> argparse.Namespace:
@@ -41,71 +47,52 @@ def main() -> None:
     df = load_dataset(args.csv)
     analysis = dataset_analysis(df)
 
-    print("=" * 72)
+    print("=" * 76)
     print("HEART DISEASE PREDICTION - RANDOM FOREST")
-    print("=" * 72)
+    print("=" * 76)
     print()
 
-    print("1. DATASET ANALYSIS")
-    print("-" * 72)
-    print(f"Raw dataset: {analysis['raw_rows']} samples, {analysis['columns']} columns")
+    print("1. DATASET & WORKFLOW")
+    print("-" * 76)
+    print(f"Raw dataset              : {analysis['raw_rows']} samples, {analysis['columns']} columns")
+    print(f"Duplicate rows removed   : {analysis['duplicates']}")
+    print(f"Training samples used    : {analysis['deduplicated_rows']}")
     print(
-        "Class balance: "
-        f"{analysis['raw_no_heart_disease']} no heart disease "
-        f"({analysis['raw_no_heart_disease_percent']:.2f}%), "
-        f"{analysis['raw_heart_disease']} heart disease "
-        f"({analysis['raw_heart_disease_percent']:.2f}%)"
+        "Training class balance   : "
+        f"{analysis['deduplicated_no_heart_disease']} no disease / "
+        f"{analysis['deduplicated_heart_disease']} disease"
     )
-    print(
-        f"Duplicate rows identified: {analysis['duplicates']} "
-        f"(unique rows if removed: {analysis['deduplicated_rows']})"
-    )
-    print(
-        "Unique-row class count: "
-        f"{analysis['deduplicated_no_heart_disease']} no heart disease, "
-        f"{analysis['deduplicated_heart_disease']} heart disease"
-    )
-    print("Training uses the Kaggle-provided dataset after validation so interaction patterns can be learned.")
-    print()
-
-    print("2. PREPROCESSING & MODEL")
-    print("-" * 72)
-    print(
-        "Data validation -> 80/20 train-test split -> scaling + one-hot encoding"
-    )
-    print(f"Model: {RANDOM_FOREST_MODEL_NAME} (n_estimators=200, max_depth=8, max_features='sqrt')")
+    print("Split & preprocessing    : 80/20 split, scaling, one-hot encoding")
+    print("Random Forest setup      : 200 trees, max_depth=8, max_features=sqrt")
     print()
 
     models, metrics, _, _ = train_models(df, selected_models=[RANDOM_FOREST_MODEL_NAME])
     comparison = metrics_to_table(metrics)
 
-    print("3. FINAL RESULT")
-    print("-" * 72)
-    print(comparison.to_string(index=False))
+    print("2. RANDOM FOREST RESULT")
+    print("-" * 76)
+    print(format_metric_table(comparison).to_string(index=False))
 
     rf_metrics = metrics[RANDOM_FOREST_MODEL_NAME]
     print()
-    print(f"Accuracy : {rf_metrics['accuracy']:.4f}")
-    print(f"Precision: {rf_metrics['precision']:.4f}")
-    print(f"Recall   : {rf_metrics['recall']:.4f}")
-    print(f"F1-score : {rf_metrics['f1_score']:.4f}")
-    print()
+    print(
+        "Scores                   : "
+        f"Accuracy {rf_metrics['accuracy'] * 100:.2f}%, "
+        f"Precision {rf_metrics['precision'] * 100:.2f}%, "
+        f"Recall {rf_metrics['recall'] * 100:.2f}%, "
+        f"F1 {rf_metrics['f1_score'] * 100:.2f}%"
+    )
     tn, fp = rf_metrics["confusion_matrix"][0]
     fn, tp = rf_metrics["confusion_matrix"][1]
-    print("Confusion matrix:")
-    print(f"True Negative  (correct no heart disease): {tn}")
-    print(f"False Positive (predicted disease wrongly): {fp}")
-    print(f"False Negative (missed heart disease): {fn}")
-    print(f"True Positive  (correct heart disease): {tp}")
+    print(f"Confusion matrix         : TN={tn}, FP={fp}, FN={fn}, TP={tp}")
     print()
 
-    print("4. TOP INFLUENTIAL FEATURES")
-    print("-" * 72)
+    print("3. TOP RANDOM FOREST FEATURE EFFECTS")
+    print("-" * 76)
     print("Sorted from strongest to weakest predictive influence.")
-    print()
     importances = random_forest_feature_importances(models[RANDOM_FOREST_MODEL_NAME])
     print(f"{'No.':<4} {'Feature':<52} {'Importance':>12}")
-    print("-" * 72)
+    print("-" * 76)
     for row_number, row in enumerate(importances.head(8).itertuples(), start=1):
         feature = textwrap.shorten(row.Feature, width=52, placeholder="...")
         print(f"{row_number:<4} {feature:<52} {row.Importance:>12.4f}")
@@ -119,8 +106,8 @@ def main() -> None:
         importances,
         output_dir,
     )
-    print("5. OUTPUT")
-    print("-" * 72)
+    print("4. OUTPUT")
+    print("-" * 76)
     print(f"Artifacts saved to: {output_dir.resolve()}")
     print("Charts saved:")
     print("- metrics_chart.png")

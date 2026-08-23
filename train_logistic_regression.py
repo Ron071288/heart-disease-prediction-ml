@@ -18,6 +18,13 @@ from heart_model import (
 from heart_visuals import save_visualizations
 
 
+def format_metric_table(table):
+    display_table = table.copy()
+    for column in ["Accuracy", "Precision", "Recall", "F1-score"]:
+        display_table[column] = display_table[column].map(lambda value: f"{value * 100:.2f}%")
+    return display_table
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Train and evaluate heart disease prediction models."
@@ -42,75 +49,52 @@ def main() -> None:
     df = load_dataset(args.csv)
     analysis = dataset_analysis(df)
 
-    print("=" * 72)
+    print("=" * 76)
     print("HEART DISEASE PREDICTION - MODEL COMPARISON")
-    print("=" * 72)
+    print("=" * 76)
     print()
 
-    print("1. DATASET ANALYSIS")
-    print("-" * 72)
-    print(f"Raw dataset: {analysis['raw_rows']} samples, {analysis['columns']} columns")
+    print("1. DATASET & WORKFLOW")
+    print("-" * 76)
+    print(f"Raw dataset              : {analysis['raw_rows']} samples, {analysis['columns']} columns")
+    print(f"Duplicate rows removed   : {analysis['duplicates']}")
+    print(f"Training samples used    : {analysis['deduplicated_rows']}")
     print(
-        "Class balance: "
-        f"{analysis['raw_no_heart_disease']} no heart disease "
-        f"({analysis['raw_no_heart_disease_percent']:.2f}%), "
-        f"{analysis['raw_heart_disease']} heart disease "
-        f"({analysis['raw_heart_disease_percent']:.2f}%)"
+        "Training class balance   : "
+        f"{analysis['deduplicated_no_heart_disease']} no disease / "
+        f"{analysis['deduplicated_heart_disease']} disease"
     )
-    print(
-        f"Duplicate rows identified: {analysis['duplicates']} "
-        f"(unique rows if removed: {analysis['deduplicated_rows']})"
-    )
-    print(
-        "Unique-row class count: "
-        f"{analysis['deduplicated_no_heart_disease']} no heart disease, "
-        f"{analysis['deduplicated_heart_disease']} heart disease"
-    )
-    print("Exact duplicate rows are removed before training to keep evaluation fair.")
-    print()
-
-    print("2. PREPROCESSING")
-    print("-" * 72)
-    print(
-        "Duplicate removal -> 80/20 train-test split -> scaling + one-hot encoding "
-        "-> interaction features"
-    )
-    print(f"Final model: {FINAL_LOGISTIC_VARIANT} (C=0.3, L1 regularization)")
-    print("Interaction features combine two existing inputs so Logistic Regression can learn their joint effect.")
+    print("Split & preprocessing    : 80/20 split, scaling, one-hot encoding")
+    print("Logistic feature setup   : interaction features + L1 regularization (C=0.3)")
     print()
 
     models, metrics, _, _ = train_models(df)
     comparison = metrics_to_table(metrics)
 
-    print("3. MODEL COMPARISON")
-    print("-" * 72)
-    print(comparison.to_string(index=False))
+    print("2. MODEL COMPARISON")
+    print("-" * 76)
+    print(format_metric_table(comparison).to_string(index=False))
 
     logistic_metrics = metrics[LOGISTIC_MODEL_NAME]
     print()
-    print("4. LOGISTIC REGRESSION RESULT")
-    print("-" * 72)
-    print(f"Accuracy : {logistic_metrics['accuracy']:.4f}")
-    print(f"Precision: {logistic_metrics['precision']:.4f}")
-    print(f"Recall   : {logistic_metrics['recall']:.4f}")
-    print(f"F1-score : {logistic_metrics['f1_score']:.4f}")
-    print(f"Backend prototype model: {BEST_MODEL_NAME}")
-    print()
+    print("3. LOGISTIC REGRESSION DETAIL")
+    print("-" * 76)
+    print(f"Backend model            : {FINAL_LOGISTIC_VARIANT}")
+    print(
+        "Scores                   : "
+        f"Accuracy {logistic_metrics['accuracy'] * 100:.2f}%, "
+        f"Precision {logistic_metrics['precision'] * 100:.2f}%, "
+        f"Recall {logistic_metrics['recall'] * 100:.2f}%, "
+        f"F1 {logistic_metrics['f1_score'] * 100:.2f}%"
+    )
     tn, fp = logistic_metrics["confusion_matrix"][0]
     fn, tp = logistic_metrics["confusion_matrix"][1]
-    print("Confusion matrix:")
-    print(f"True Negative  (correct no heart disease): {tn}")
-    print(f"False Positive (predicted disease wrongly): {fp}")
-    print(f"False Negative (missed heart disease): {fn}")
-    print(f"True Positive  (correct heart disease): {tp}")
+    print(f"Confusion matrix         : TN={tn}, FP={fp}, FN={fn}, TP={tp}")
     print()
 
-    print("5. TOP INFLUENTIAL FEATURES")
-    print("-" * 72)
-    print("Sorted from strongest to weakest effect.")
-    print("Positive direction = increases heart disease probability.")
-    print("Negative direction = decreases heart disease probability.")
-    print()
+    print("4. TOP LOGISTIC REGRESSION FEATURE EFFECTS")
+    print("-" * 76)
+    print("Positive = toward disease; negative = toward no disease.")
     coefficients = logistic_regression_coefficients(models[LOGISTIC_MODEL_NAME])
     print(f"{'No.':<4} {'Feature':<52} {'Direction':<25} {'Coef.':>8}")
     print("-" * 96)
@@ -132,8 +116,8 @@ def main() -> None:
         coefficients,
         output_dir,
     )
-    print("6. OUTPUT")
-    print("-" * 72)
+    print("5. OUTPUT")
+    print("-" * 76)
     print(f"Artifacts saved to: {output_dir.resolve()}")
     print("Charts saved:")
     print("- model_comparison_chart.png")

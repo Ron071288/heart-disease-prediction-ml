@@ -21,7 +21,6 @@ from heart_visuals import (
     create_feature_coefficient_chart,
     create_feature_importance_chart,
     create_model_comparison_chart,
-    create_metrics_chart,
 )
 
 
@@ -72,8 +71,8 @@ CATEGORY_DESCRIPTIONS = {
 
 FRONTEND_MODEL_OPTIONS = [
     LOGISTIC_MODEL_NAME,
-    KNN_MODEL_NAME,
     RANDOM_FOREST_MODEL_NAME,
+    KNN_MODEL_NAME,
 ]
 
 
@@ -96,6 +95,13 @@ def get_trained_models(csv_path: str | None):
 
 def display_label(column_name: str) -> str:
     return DISPLAY_LABELS.get(column_name, column_name)
+
+
+def format_metric_table(table: pd.DataFrame) -> pd.DataFrame:
+    display_table = table.copy()
+    for column in ["Accuracy", "Precision", "Recall", "F1-score"]:
+        display_table[column] = display_table[column].map(lambda value: f"{value * 100:.2f}%")
+    return display_table
 
 
 def user_input_form(df: pd.DataFrame) -> pd.DataFrame:
@@ -260,7 +266,7 @@ with st.expander("Model Analysis and Charts", expanded=False):
     )
 
     st.write("Model comparison table")
-    st.dataframe(metric_table, width="stretch", hide_index=True)
+    st.dataframe(format_metric_table(metric_table), width="stretch", hide_index=True)
     st.pyplot(create_model_comparison_chart(metric_table), width="stretch")
 
     if is_model_available and selected_model_name is not None:
@@ -272,19 +278,16 @@ with st.expander("Model Analysis and Charts", expanded=False):
         score_columns[2].metric("Recall", f"{selected_metrics['recall']:.2%}")
         score_columns[3].metric("F1-score", f"{selected_metrics['f1_score']:.2%}")
 
-        left_chart, right_chart = st.columns(2)
-        with left_chart:
-            single_metric_table = metric_table[metric_table["Model"] == selected_model_name]
-            st.pyplot(create_metrics_chart(single_metric_table), width="stretch")
-        with right_chart:
-            st.pyplot(
-                create_confusion_matrix_chart(selected_metrics["confusion_matrix"]),
-                width="stretch",
-            )
-
         if selected_model_name == LOGISTIC_MODEL_NAME:
             coefficient_table = logistic_regression_coefficients(models[LOGISTIC_MODEL_NAME])
-            st.pyplot(create_feature_coefficient_chart(coefficient_table), width="stretch")
+            left_chart, right_chart = st.columns(2)
+            with left_chart:
+                st.pyplot(
+                    create_confusion_matrix_chart(selected_metrics["confusion_matrix"]),
+                    width="stretch",
+                )
+            with right_chart:
+                st.pyplot(create_feature_coefficient_chart(coefficient_table), width="stretch")
 
             with st.expander("View all model feature coefficients", expanded=False):
                 st.caption(
@@ -309,7 +312,19 @@ with st.expander("Model Analysis and Charts", expanded=False):
             importance_table = random_forest_feature_importances(
                 models[RANDOM_FOREST_MODEL_NAME]
             )
-            st.pyplot(create_feature_importance_chart(importance_table), width="stretch")
+            left_chart, right_chart = st.columns(2)
+            with left_chart:
+                st.pyplot(
+                    create_confusion_matrix_chart(selected_metrics["confusion_matrix"]),
+                    width="stretch",
+                )
+            with right_chart:
+                st.pyplot(create_feature_importance_chart(importance_table), width="stretch")
+        else:
+            st.pyplot(
+                create_confusion_matrix_chart(selected_metrics["confusion_matrix"]),
+                width="stretch",
+            )
     else:
         st.info("Please select a trained model to view performance details.")
 

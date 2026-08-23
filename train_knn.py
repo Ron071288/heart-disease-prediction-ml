@@ -4,7 +4,6 @@ import argparse
 from pathlib import Path
 
 from heart_model import (
-    BEST_MODEL_NAME,
     KNN_MODEL_NAME,
     dataset_analysis,
     load_dataset,
@@ -13,6 +12,13 @@ from heart_model import (
     train_models,
 )
 from heart_visuals import save_knn_visualizations
+
+
+def format_metric_table(table):
+    display_table = table.copy()
+    for column in ["Accuracy", "Precision", "Recall", "F1-score"]:
+        display_table[column] = display_table[column].map(lambda value: f"{value * 100:.2f}%")
+    return display_table
 
 
 def parse_args() -> argparse.Namespace:
@@ -39,67 +45,44 @@ def main() -> None:
     df = load_dataset(args.csv)
     analysis = dataset_analysis(df)
 
-    print("=" * 72)
+    print("=" * 76)
     print("HEART DISEASE PREDICTION - K-NEAREST NEIGHBORS")
-    print("=" * 72)
+    print("=" * 76)
     print()
 
-    print("1. DATASET ANALYSIS")
-    print("-" * 72)
-    print(f"Raw dataset: {analysis['raw_rows']} samples, {analysis['columns']} columns")
+    print("1. DATASET & WORKFLOW")
+    print("-" * 76)
+    print(f"Raw dataset              : {analysis['raw_rows']} samples, {analysis['columns']} columns")
+    print(f"Duplicate rows removed   : {analysis['duplicates']}")
+    print(f"Training samples used    : {analysis['deduplicated_rows']}")
     print(
-        "Class balance: "
-        f"{analysis['raw_no_heart_disease']} no heart disease "
-        f"({analysis['raw_no_heart_disease_percent']:.2f}%), "
-        f"{analysis['raw_heart_disease']} heart disease "
-        f"({analysis['raw_heart_disease_percent']:.2f}%)"
+        "Training class balance   : "
+        f"{analysis['deduplicated_no_heart_disease']} no disease / "
+        f"{analysis['deduplicated_heart_disease']} disease"
     )
-    print(
-        f"Duplicate rows identified: {analysis['duplicates']} "
-        f"(unique rows if removed: {analysis['deduplicated_rows']})"
-    )
-    print(
-        "Unique-row class count: "
-        f"{analysis['deduplicated_no_heart_disease']} no heart disease, "
-        f"{analysis['deduplicated_heart_disease']} heart disease"
-    )
-    print("Exact duplicate rows are removed before training to keep evaluation fair.")
-    print()
-
-    print("2. PREPROCESSING & MODEL")
-    print("-" * 72)
-    print(
-        "Duplicate removal -> 80/20 train-test split -> scaling + one-hot encoding"
-    )
-    print(f"Model: {KNN_MODEL_NAME} (n_neighbors=11, metric=minkowski)")
-    print("StandardScaler is applied before KNN so all features share the same distance scale.")
+    print("Split & preprocessing    : 80/20 split, scaling, one-hot encoding")
+    print("KNN setup                : n_neighbors=11, metric=minkowski")
     print()
 
     models, metrics, _, _ = train_models(df, selected_models=[KNN_MODEL_NAME])
     comparison = metrics_to_table(metrics)
 
-    print("3. FINAL RESULT")
-    print("-" * 72)
-    print(comparison.to_string(index=False))
+    print("2. KNN RESULT")
+    print("-" * 76)
+    print(format_metric_table(comparison).to_string(index=False))
 
     knn_metrics = metrics[KNN_MODEL_NAME]
     print()
-    print(f"Accuracy : {knn_metrics['accuracy']:.4f}")
-    print(f"Precision: {knn_metrics['precision']:.4f}")
-    print(f"Recall   : {knn_metrics['recall']:.4f}")
-    print(f"F1-score : {knn_metrics['f1_score']:.4f}")
-    print(f"Backend prototype model: {BEST_MODEL_NAME}")
-    print()
+    print(
+        "Scores                   : "
+        f"Accuracy {knn_metrics['accuracy'] * 100:.2f}%, "
+        f"Precision {knn_metrics['precision'] * 100:.2f}%, "
+        f"Recall {knn_metrics['recall'] * 100:.2f}%, "
+        f"F1 {knn_metrics['f1_score'] * 100:.2f}%"
+    )
     tn, fp = knn_metrics["confusion_matrix"][0]
     fn, tp = knn_metrics["confusion_matrix"][1]
-    print("Confusion matrix:")
-    print(f"True Negative  (correct no heart disease): {tn}")
-    print(f"False Positive (predicted disease wrongly): {fp}")
-    print(f"False Negative (missed heart disease): {fn}")
-    print(f"True Positive  (correct heart disease): {tp}")
-    print()
-    print("Classification report:")
-    print(knn_metrics["classification_report"])
+    print(f"Confusion matrix         : TN={tn}, FP={fp}, FN={fn}, TP={tp}")
 
     output_dir = Path(args.output)
     save_artifacts(models, metrics, output_dir)
@@ -108,8 +91,9 @@ def main() -> None:
         knn_metrics["confusion_matrix"],
         output_dir,
     )
-    print("4. OUTPUT")
-    print("-" * 72)
+    print()
+    print("3. OUTPUT")
+    print("-" * 76)
     print(f"Artifacts saved to: {output_dir.resolve()}")
     print("Charts saved:")
     print("- metrics_chart.png")
