@@ -1,6 +1,6 @@
 # Heart Disease Prediction
 
-This folder contains the Logistic Regression model implementation with interaction-feature engineering and a simple Streamlit prototype for the group demo.
+This folder contains a heart disease prediction prototype using supervised machine learning. The integrated system trains Logistic Regression, Random Forest, and K-Nearest Neighbors using the same dataset, preprocessing steps, train-test split, and evaluation metrics.
 
 ## Dataset
 
@@ -18,36 +18,42 @@ The code can load the dataset in two ways:
 pip install -r requirements.txt
 ```
 
-## Train and Evaluate Models
+## Train and Evaluate All Models
 
 Automatically download from KaggleHub:
 
 ```bash
-python train_logistic_regression.py
+python train_all_models.py
 ```
 
 Or use a local CSV:
 
 ```bash
-python train_logistic_regression.py --csv /path/to/heart.csv
+python train_all_models.py --csv /path/to/heart.csv
 ```
 
-The script uses an 80% training and 20% testing split. The current backend implementation trains and evaluates Logistic Regression with interaction features. KNN and Random Forest can be added later by other group members using the same dataset, preprocessing flow, and evaluation metrics.
+The script removes exact duplicate rows, then uses an 80% training and 20% testing split. All models use the same preprocessing flow: missing-value handling, scaling for numeric features, and one-hot encoding for categorical features. Logistic Regression also uses interaction features so it can learn combined effects between features.
+
+Individual model scripts are also provided for member-specific demonstration:
+
+- `train_logistic_regression.py`
+- `train_random_forest.py`
+- `train_knn.py`
 
 Saved outputs:
 
 - `artifacts/model_comparison.csv`
 - `artifacts/metrics.json`
-- trained `.joblib` model file
-- chart images for model performance, confusion matrix, and influential features
+- trained `.joblib` model files
+- chart images for model comparison, confusion matrix, coefficients, and feature importances
 
 ## Run Prototype
 
 ```bash
-streamlit run app.py
+python -m streamlit run app.py
 ```
 
-The prototype lets the user choose a model option, enter patient details, and view the prediction result. At this stage, the backend prediction uses the trained Logistic Regression interaction-feature model. After integration, the selected frontend model can be connected to each group member's backend model.
+The prototype lets the user choose a model, enter patient details, and view the prediction result. It also includes dataset analysis, model comparison, confusion matrix charts, and model-specific feature explanation where available.
 
 ## Logistic Regression Explanation
 
@@ -58,3 +64,13 @@ Logistic Regression can be explained as:
 - Interpretable because it estimates the probability of heart disease.
 - Improved with interaction features, which combine two existing inputs so the model can learn their joint effect.
 - Evaluated using accuracy, precision, recall, F1-score, and confusion matrix.
+
+## Submission Checklist
+
+- Documentation follows the provided documentation template.
+- AI topic and problem are clearly stated: supervised machine learning for heart disease prediction.
+- Dataset source is disclosed: Kaggle Heart Dataset.
+- Dataset analysis is included: raw samples, duplicate rows, cleaned samples, and class balance.
+- Prototype source code is included.
+- Evaluation metrics are included for model comparison.
+- AI Disclosure Statement and Plagiarism Statement are completed in the report template.
