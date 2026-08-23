@@ -174,6 +174,7 @@ def user_input_form(df: pd.DataFrame) -> pd.DataFrame:
 
 st.title("Heart Disease Prediction")
 st.caption("Interactive Machine Learning Model Prototype")
+st.info("This prototype is for academic demonstration only and is not a medical diagnosis tool.")
 
 with st.sidebar:
     st.header("Dataset")
@@ -194,7 +195,7 @@ except Exception as exc:
 analysis = dataset_analysis(df)
 metric_table = metrics_to_table(metrics)
 
-st.subheader("Prediction")
+st.subheader("1. Patient Prediction")
 model_column, backend_column = st.columns(2)
 with model_column:
     selected_frontend_model = st.selectbox(
@@ -210,7 +211,7 @@ if selected_model_name == LOGISTIC_MODEL_NAME:
     backend_desc = FINAL_LOGISTIC_VARIANT
 
 with backend_column:
-    st.text_input("Backend model currently connected", value=backend_desc, disabled=True)
+    st.text_input("Selected backend model", value=backend_desc, disabled=True)
 
 patient_input = user_input_form(df)
 
@@ -234,11 +235,13 @@ if st.button("Predict Heart Disease", type="primary"):
         if probability_text:
             st.info(probability_text)
 
-        st.write("Frontend selected model:", selected_frontend_model)
-        st.write("Backend prediction model:", backend_desc)
+        st.caption(
+            f"Frontend selected model: {selected_frontend_model} | "
+            f"Backend prediction model: {backend_desc}"
+        )
 
         if selected_model_name == LOGISTIC_MODEL_NAME:
-            st.write("Top factors affecting this prediction")
+            st.subheader("This Patient's Explanation")
             contribution_table = patient_prediction_contributions(
                 model,
                 patient_input,
@@ -264,13 +267,13 @@ if st.button("Predict Heart Disease", type="primary"):
                     mime="text/csv",
                 )
 
-        st.write("Patient input")
+        st.write("Patient input used for prediction")
         st.dataframe(patient_input, width="stretch")
 
 st.divider()
 
-with st.expander("Model Analysis and Charts", expanded=False):
-    st.write("Dataset analysis")
+with st.expander("2. Model Analysis and Charts", expanded=False):
+    st.subheader("Dataset Summary")
     metric_columns = st.columns(4)
     metric_columns[0].metric("Raw samples", analysis["raw_rows"])
     metric_columns[1].metric("Duplicates removed", analysis["duplicates"])
@@ -285,13 +288,14 @@ with st.expander("Model Analysis and Charts", expanded=False):
         "interaction features to learn combined feature patterns."
     )
 
-    st.write("Model comparison table")
+    st.subheader("Model Comparison")
     st.dataframe(format_metric_table(metric_table), width="stretch", hide_index=True)
     st.pyplot(create_model_comparison_chart(metric_table), width="stretch")
 
     if is_model_available and selected_model_name is not None:
         selected_metrics = metrics[selected_model_name]
-        st.write(f"**{backend_desc}** performance")
+        st.subheader("Selected Model Performance")
+        st.write(f"**{backend_desc}**")
         score_columns = st.columns(4)
         score_columns[0].metric("Accuracy", f"{selected_metrics['accuracy']:.2%}")
         score_columns[1].metric("Precision", f"{selected_metrics['precision']:.2%}")
@@ -300,6 +304,10 @@ with st.expander("Model Analysis and Charts", expanded=False):
 
         if selected_model_name == LOGISTIC_MODEL_NAME:
             coefficient_table = logistic_regression_coefficients(models[LOGISTIC_MODEL_NAME])
+            st.subheader("Global Model Explanation")
+            st.caption(
+                "These charts explain how the trained model behaves overall, not only one patient."
+            )
             st.pyplot(
                 create_confusion_matrix_chart(selected_metrics["confusion_matrix"]),
                 width="content",
@@ -346,6 +354,4 @@ with st.expander("Model Analysis and Charts", expanded=False):
     else:
         st.info("Please select a trained model to view performance details.")
 
-st.caption(
-    "This prototype is for academic demonstration only and is not a medical diagnosis tool."
-)
+st.caption("Academic prototype only. Prediction results should not be used as medical advice.")
