@@ -280,19 +280,17 @@ with st.expander("Model Analysis and Charts", expanded=False):
 
         if selected_model_name == LOGISTIC_MODEL_NAME:
             coefficient_table = logistic_regression_coefficients(models[LOGISTIC_MODEL_NAME])
-            left_chart, right_chart = st.columns(2)
-            with left_chart:
-                st.pyplot(
-                    create_confusion_matrix_chart(selected_metrics["confusion_matrix"]),
-                    width="stretch",
-                )
-            with right_chart:
-                st.pyplot(create_feature_coefficient_chart(coefficient_table), width="stretch")
+            st.pyplot(
+                create_confusion_matrix_chart(selected_metrics["confusion_matrix"]),
+                width="content",
+            )
+            st.pyplot(create_feature_coefficient_chart(coefficient_table), width="stretch")
 
             with st.expander("View all model feature coefficients", expanded=False):
                 st.caption(
-                    "This table includes every non-zero single feature and interaction feature "
-                    "used by Logistic Regression after preprocessing."
+                    "The chart above shows the strongest effects only. This table includes every "
+                    "non-zero single feature and interaction feature used by Logistic Regression "
+                    "after preprocessing."
                 )
                 non_zero_coefficients = coefficient_table[
                     coefficient_table["Coefficient"].abs() > 0

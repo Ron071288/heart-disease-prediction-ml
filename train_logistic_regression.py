@@ -91,9 +91,10 @@ def main() -> None:
     print(f"Confusion matrix         : TN={tn}, FP={fp}, FN={fn}, TP={tp}")
     print()
 
-    print("4. TOP LOGISTIC REGRESSION FEATURE EFFECTS")
+    print("4. TOP 8 LOGISTIC REGRESSION FEATURE EFFECTS")
     print("-" * 76)
     print("Positive = toward disease; negative = toward no disease.")
+    print("Full coefficient list is saved to artifacts/logistic_regression_coefficients.csv.")
     coefficients = logistic_regression_coefficients(models[LOGISTIC_MODEL_NAME])
     print(f"{'No.':<4} {'Feature':<52} {'Direction':<25} {'Coef.':>8}")
     print("-" * 96)
