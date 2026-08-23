@@ -462,7 +462,7 @@ def logistic_regression_coefficients(model: Pipeline) -> pd.DataFrame:
 def patient_prediction_contributions(
     model: Pipeline,
     patient_input: pd.DataFrame,
-    top_n: int = 10,
+    top_n: int | None = 10,
 ) -> pd.DataFrame:
     classifier = model.named_steps["classifier"]
     if not hasattr(classifier, "coef_"):
@@ -493,12 +493,11 @@ def patient_prediction_contributions(
         }
     )
     table = table[table["AbsContribution"] > 0]
-    return (
-        table.sort_values("AbsContribution", ascending=False)
-        .head(top_n)
-        .drop(columns=["AbsContribution"])
-        .reset_index(drop=True)
-    )
+    sorted_table = table.sort_values("AbsContribution", ascending=False)
+    if top_n is not None:
+        sorted_table = sorted_table.head(top_n)
+
+    return sorted_table.drop(columns=["AbsContribution"]).reset_index(drop=True)
 
 
 def readable_feature_name(raw_feature_name: str) -> str:

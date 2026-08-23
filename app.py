@@ -4,16 +4,15 @@ import pandas as pd
 import streamlit as st
 
 from heart_model import (
-    BEST_MODEL_NAME,
     FINAL_LOGISTIC_VARIANT,
     LOGISTIC_MODEL_NAME,
     RANDOM_FOREST_MODEL_NAME,
     dataset_analysis,
     load_dataset,
     logistic_regression_coefficients,
-    random_forest_feature_importances,
     metrics_to_table,
     patient_prediction_contributions,
+    random_forest_feature_importances,
     train_models,
 )
 from heart_visuals import (
@@ -60,14 +59,19 @@ CATEGORY_DESCRIPTIONS = {
     },
     "exang": {0: "0 - No", 1: "1 - Yes"},
     "slope": {0: "0 - Upsloping", 1: "1 - Flat", 2: "2 - Downsloping"},
-    "thal": {0: "0 - Unknown", 1: "1 - Fixed defect", 2: "2 - Normal", 3: "3 - Reversible defect"},
+    "thal": {
+        0: "0 - Unknown",
+        1: "1 - Fixed defect",
+        2: "2 - Normal",
+        3: "3 - Reversible defect",
+    },
 }
 
 
 FRONTEND_MODEL_OPTIONS = [
-    "Logistic Regression",
+    LOGISTIC_MODEL_NAME,
     "K-Nearest Neighbors",
-    "Random Forest",
+    RANDOM_FOREST_MODEL_NAME,
 ]
 
 
@@ -171,21 +175,19 @@ with model_column:
         help="Select a trained machine learning model from the group to perform predictions.",
     )
 
-# Check if selected model is trained/available
-if selected_frontend_model in models:
-    selected_model_name = selected_frontend_model
-    is_model_available = True
-else:
-    is_model_available = False
+is_model_available = selected_frontend_model in models
+selected_model_name = selected_frontend_model if is_model_available else None
+backend_desc = selected_model_name or "Not Implemented"
+if selected_model_name == LOGISTIC_MODEL_NAME:
+    backend_desc = FINAL_LOGISTIC_VARIANT
 
 with backend_column:
-    backend_desc = selected_frontend_model if is_model_available else "Not Implemented"
     st.text_input("Backend model currently connected", value=backend_desc, disabled=True)
 
 patient_input = user_input_form(df)
 
 if st.button("Predict Heart Disease", type="primary"):
-    if not is_model_available:
+    if not is_model_available or selected_model_name is None:
         st.warning(f"The model '{selected_frontend_model}' has not been trained or integrated yet.")
     else:
         model = models[selected_model_name]
@@ -205,24 +207,37 @@ if st.button("Predict Heart Disease", type="primary"):
             st.info(probability_text)
 
         st.write("Frontend selected model:", selected_frontend_model)
-        st.write("Backend prediction model:", selected_model_name)
+        st.write("Backend prediction model:", backend_desc)
 
         if selected_model_name == LOGISTIC_MODEL_NAME:
             st.write("Top factors affecting this prediction")
-            contribution_table = patient_prediction_contributions(model, patient_input)
-            st.dataframe(
-                contribution_table,
-                use_container_width=True,
-                hide_index=True,
+            contribution_table = patient_prediction_contributions(
+                model,
+                patient_input,
+                top_n=10,
             )
+            st.dataframe(contribution_table, width="stretch", hide_index=True)
             st.caption(
                 "Positive contribution pushes the prediction toward heart disease. "
                 "Negative contribution pushes it toward no heart disease."
             )
 
-        st.write("Patient input")
-        st.dataframe(patient_input, use_container_width=True)
+            with st.expander("View all feature effects for this patient", expanded=False):
+                all_contributions = patient_prediction_contributions(
+                    model,
+                    patient_input,
+                    top_n=None,
+                )
+                st.dataframe(all_contributions, width="stretch", hide_index=True)
+                st.download_button(
+                    "Download patient feature effects CSV",
+                    data=all_contributions.to_csv(index=False).encode("utf-8"),
+                    file_name="patient_feature_effects.csv",
+                    mime="text/csv",
+                )
 
+        st.write("Patient input")
+        st.dataframe(patient_input, width="stretch")
 
 st.divider()
 
@@ -238,13 +253,16 @@ with st.expander("Model Analysis and Charts", expanded=False):
         help="No heart disease / Heart disease",
     )
     st.caption(
-        "Exact duplicate rows are removed before training, then interaction features are added "
-        "to learn combined feature patterns."
+        "Exact duplicate rows are removed before training. Logistic Regression also uses "
+        "interaction features to learn combined feature patterns."
     )
 
-    if is_model_available:
+    st.write("Model comparison table")
+    st.dataframe(metric_table, width="stretch", hide_index=True)
+
+    if is_model_available and selected_model_name is not None:
         selected_metrics = metrics[selected_model_name]
-        st.write(f"**{selected_model_name}** performance")
+        st.write(f"**{backend_desc}** performance")
         score_columns = st.columns(4)
         score_columns[0].metric("Accuracy", f"{selected_metrics['accuracy']:.2%}")
         score_columns[1].metric("Precision", f"{selected_metrics['precision']:.2%}")
@@ -253,29 +271,44 @@ with st.expander("Model Analysis and Charts", expanded=False):
 
         left_chart, right_chart = st.columns(2)
         with left_chart:
-            st.write("Model Comparison Table")
-            st.dataframe(metric_table, use_container_width=True)
-            
-            # Plot the metrics chart filtered to the selected model
             single_metric_table = metric_table[metric_table["Model"] == selected_model_name]
-            st.pyplot(create_metrics_chart(single_metric_table))
+            st.pyplot(create_metrics_chart(single_metric_table), width="stretch")
         with right_chart:
             st.pyplot(
-                create_confusion_matrix_chart(selected_metrics["confusion_matrix"])
+                create_confusion_matrix_chart(selected_metrics["confusion_matrix"]),
+                width="stretch",
             )
-        
+
         if selected_model_name == LOGISTIC_MODEL_NAME:
             coefficient_table = logistic_regression_coefficients(models[LOGISTIC_MODEL_NAME])
-            st.pyplot(
-                create_feature_coefficient_chart(coefficient_table)
-            )
+            st.pyplot(create_feature_coefficient_chart(coefficient_table), width="stretch")
+
+            with st.expander("View all model feature coefficients", expanded=False):
+                st.caption(
+                    "This table includes every non-zero single feature and interaction feature "
+                    "used by Logistic Regression after preprocessing."
+                )
+                non_zero_coefficients = coefficient_table[
+                    coefficient_table["Coefficient"].abs() > 0
+                ].reset_index(drop=True)
+                st.dataframe(
+                    non_zero_coefficients[["Feature", "Direction", "Coefficient"]],
+                    width="stretch",
+                    hide_index=True,
+                )
+                st.download_button(
+                    "Download all model coefficients CSV",
+                    data=coefficient_table.to_csv(index=False).encode("utf-8"),
+                    file_name="logistic_regression_all_coefficients.csv",
+                    mime="text/csv",
+                )
         elif selected_model_name == RANDOM_FOREST_MODEL_NAME:
-            importance_table = random_forest_feature_importances(models[RANDOM_FOREST_MODEL_NAME])
-            st.pyplot(
-                create_feature_importance_chart(importance_table)
+            importance_table = random_forest_feature_importances(
+                models[RANDOM_FOREST_MODEL_NAME]
             )
+            st.pyplot(create_feature_importance_chart(importance_table), width="stretch")
     else:
-        st.info(f"Please select a trained model (Logistic Regression or Random Forest) to view performance details.")
+        st.info("Please select a trained model to view performance details.")
 
 st.caption(
     "This prototype is for academic demonstration only and is not a medical diagnosis tool."
