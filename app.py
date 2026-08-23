@@ -69,6 +69,15 @@ CATEGORY_DESCRIPTIONS = {
 }
 
 
+NUMERIC_INPUT_SETTINGS = {
+    "age": {"min": 0, "max": 120, "step": 1},
+    "trestbps": {"min": 40, "max": 260, "step": 1},
+    "chol": {"min": 80, "max": 700, "step": 1},
+    "thalachh": {"min": 40, "max": 250, "step": 1},
+    "oldpeak": {"min": 0.0, "max": 10.0, "step": 0.1, "format": "%.1f"},
+}
+
+
 FRONTEND_MODEL_OPTIONS = [
     LOGISTIC_MODEL_NAME,
     RANDOM_FOREST_MODEL_NAME,
@@ -104,6 +113,29 @@ def format_metric_table(table: pd.DataFrame) -> pd.DataFrame:
     return display_table
 
 
+def numeric_input(column_name: str, series: pd.Series):
+    settings = NUMERIC_INPUT_SETTINGS.get(column_name, {})
+    median_value = float(series.median())
+
+    if pd.api.types.is_integer_dtype(series):
+        return st.number_input(
+            display_label(column_name),
+            min_value=settings.get("min"),
+            max_value=settings.get("max"),
+            value=int(round(median_value)),
+            step=settings.get("step", 1),
+        )
+
+    return st.number_input(
+        display_label(column_name),
+        min_value=settings.get("min"),
+        max_value=settings.get("max"),
+        value=round(median_value, 1),
+        step=settings.get("step", 0.1),
+        format=settings.get("format", "%.1f"),
+    )
+
+
 def user_input_form(df: pd.DataFrame) -> pd.DataFrame:
     feature_df = df.drop(columns=["target"])
     user_values = {}
@@ -132,19 +164,7 @@ def user_input_form(df: pd.DataFrame) -> pd.DataFrame:
                     )
                     user_values[column_name] = options[formatted_options.index(selected_text)]
                 else:
-                    if pd.api.types.is_integer_dtype(series):
-                        user_values[column_name] = st.number_input(
-                            display_label(column_name),
-                            value=int(round(series.median())),
-                            step=1,
-                        )
-                    else:
-                        user_values[column_name] = st.number_input(
-                            display_label(column_name),
-                            value=median_value,
-                            step=0.1,
-                            format="%.1f",
-                        )
+                    user_values[column_name] = numeric_input(column_name, series)
             else:
                 options = sorted(series.dropna().astype(str).unique().tolist())
                 user_values[column_name] = st.selectbox(display_label(column_name), options=options)
