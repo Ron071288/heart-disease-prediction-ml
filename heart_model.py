@@ -136,7 +136,7 @@ LOGISTIC_VARIANTS = {
     },
     "Tuned Logistic Regression + Interaction Features": {
         "classifier": LogisticRegression(
-            C=10,
+            C=0.3,
             penalty="l1",
             solver="liblinear",
             max_iter=20000,
@@ -332,7 +332,7 @@ def evaluate_predictions(y_true: pd.Series, y_pred: np.ndarray) -> dict[str, Any
 def train_models(
     df: pd.DataFrame,
     selected_models: list[str] | None = None,
-    drop_duplicates: bool = False,
+    drop_duplicates: bool = True,
 ) -> tuple[dict[str, Pipeline], dict[str, dict[str, Any]], pd.DataFrame, pd.Series]:
     cleaned = clean_dataset(df, drop_duplicates=drop_duplicates)
     X, y = split_features_target(cleaned)
@@ -456,6 +456,48 @@ def logistic_regression_coefficients(model: Pipeline) -> pd.DataFrame:
     )
     return table.sort_values("AbsCoefficient", ascending=False).drop(
         columns=["AbsCoefficient"]
+    )
+
+
+def patient_prediction_contributions(
+    model: Pipeline,
+    patient_input: pd.DataFrame,
+    top_n: int = 10,
+) -> pd.DataFrame:
+    classifier = model.named_steps["classifier"]
+    if not hasattr(classifier, "coef_"):
+        raise ValueError("Selected model does not expose coefficients.")
+
+    transformed = model.named_steps["preprocessor"].transform(patient_input)
+    feature_names = model.named_steps["preprocessor"].get_feature_names_out()
+
+    if "interactions" in model.named_steps:
+        transformed = model.named_steps["interactions"].transform(transformed)
+        feature_names = model.named_steps["interactions"].get_feature_names_out(
+            feature_names
+        )
+
+    values = np.asarray(transformed).reshape(-1)
+    coefficients = classifier.coef_[0]
+    contributions = values * coefficients
+
+    table = pd.DataFrame(
+        {
+            "Feature": [readable_feature_name(name) for name in feature_names],
+            "Input Effect": [
+                "Pushes toward heart disease" if value > 0 else "Pushes toward no heart disease"
+                for value in contributions
+            ],
+            "Contribution": contributions,
+            "AbsContribution": np.abs(contributions),
+        }
+    )
+    table = table[table["AbsContribution"] > 0]
+    return (
+        table.sort_values("AbsContribution", ascending=False)
+        .head(top_n)
+        .drop(columns=["AbsContribution"])
+        .reset_index(drop=True)
     )
 
 

@@ -13,6 +13,7 @@ from heart_model import (
     logistic_regression_coefficients,
     random_forest_feature_importances,
     metrics_to_table,
+    patient_prediction_contributions,
     train_models,
 )
 from heart_visuals import (
@@ -205,8 +206,23 @@ if st.button("Predict Heart Disease", type="primary"):
 
         st.write("Frontend selected model:", selected_frontend_model)
         st.write("Backend prediction model:", selected_model_name)
+
+        if selected_model_name == LOGISTIC_MODEL_NAME:
+            st.write("Top factors affecting this prediction")
+            contribution_table = patient_prediction_contributions(model, patient_input)
+            st.dataframe(
+                contribution_table,
+                use_container_width=True,
+                hide_index=True,
+            )
+            st.caption(
+                "Positive contribution pushes the prediction toward heart disease. "
+                "Negative contribution pushes it toward no heart disease."
+            )
+
         st.write("Patient input")
         st.dataframe(patient_input, use_container_width=True)
+
 
 st.divider()
 
@@ -214,15 +230,16 @@ with st.expander("Model Analysis and Charts", expanded=False):
     st.write("Dataset analysis")
     metric_columns = st.columns(4)
     metric_columns[0].metric("Raw samples", analysis["raw_rows"])
-    metric_columns[1].metric("Duplicate rows found", analysis["duplicates"])
-    metric_columns[2].metric("Unique rows", analysis["deduplicated_rows"])
+    metric_columns[1].metric("Duplicates removed", analysis["duplicates"])
+    metric_columns[2].metric("Training samples", analysis["deduplicated_rows"])
     metric_columns[3].metric(
-        "Raw class balance",
-        f"{analysis['raw_no_heart_disease']} / {analysis['raw_heart_disease']}",
+        "Training class balance",
+        f"{analysis['deduplicated_no_heart_disease']} / {analysis['deduplicated_heart_disease']}",
         help="No heart disease / Heart disease",
     )
     st.caption(
-        "The models use the Kaggle-provided dataset after validation so interaction and feature patterns can be learned."
+        "Exact duplicate rows are removed before training, then interaction features are added "
+        "to learn combined feature patterns."
     )
 
     if is_model_available:
