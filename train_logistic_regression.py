@@ -43,7 +43,7 @@ def main() -> None:
     analysis = dataset_analysis(df)
 
     print("=" * 72)
-    print("HEART DISEASE PREDICTION - LOGISTIC REGRESSION")
+    print("HEART DISEASE PREDICTION - MODEL COMPARISON")
     print("=" * 72)
     print()
 

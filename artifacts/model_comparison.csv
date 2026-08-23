@@ -1,2 +1,4 @@
 Model,Accuracy,Precision,Recall,F1-score
+Logistic Regression,0.8926,0.871,0.9153,0.8926
+Random Forest,0.8926,0.8833,0.8983,0.8908
 K-Nearest Neighbors,0.8347,0.8197,0.8475,0.8333
