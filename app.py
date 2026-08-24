@@ -20,6 +20,7 @@ from heart_visuals import (
     create_confusion_matrix_chart,
     create_feature_coefficient_chart,
     create_feature_importance_chart,
+    create_knn_tuning_chart,
     create_model_comparison_chart,
 )
 
@@ -346,6 +347,60 @@ with st.expander("2. Model Analysis and Charts", expanded=False):
                 )
             with right_chart:
                 st.pyplot(create_feature_importance_chart(importance_table), width="stretch")
+        elif selected_model_name == KNN_MODEL_NAME:
+            import os as _os
+
+            _artifacts_dir = _os.path.join(
+                _os.path.dirname(_os.path.abspath(__file__)), "artifacts"
+            )
+            _tuning_csv = _os.path.join(_artifacts_dir, "knn_tuning_results.csv")
+
+            left_chart, right_chart = st.columns(2)
+            with left_chart:
+                st.pyplot(
+                    create_confusion_matrix_chart(selected_metrics["confusion_matrix"]),
+                    width="stretch",
+                )
+            with right_chart:
+                if _os.path.exists(_tuning_csv):
+                    tuning_results = pd.read_csv(_tuning_csv)
+                    st.pyplot(create_knn_tuning_chart(tuning_results), width="stretch")
+                else:
+                    st.info(
+                        "KNN tuning chart not available yet. "
+                        "Run `python train_knn.py` to generate "
+                        "`artifacts/knn_tuning_results.csv`, then refresh."
+                    )
+
+            st.subheader("KNN Hyperparameter Tuning Results")
+            if _os.path.exists(_tuning_csv):
+                tuning_results = pd.read_csv(_tuning_csv)
+                display_cols = [
+                    "n_neighbors", "weights", "metric",
+                    "CV Accuracy Mean", "CV Accuracy Std",
+                    "CV F1 Mean", "CV F1 Std",
+                ]
+                fmt_cols = ["CV Accuracy Mean", "CV Accuracy Std", "CV F1 Mean", "CV F1 Std"]
+                tuning_display = tuning_results[display_cols].copy()
+                for col in fmt_cols:
+                    tuning_display[col] = tuning_display[col].map(lambda v: f"{v * 100:.2f}%")
+                st.caption(
+                    "All 52 combinations evaluated (k, weights, metric) sorted by "
+                    "5-fold CV accuracy on the training set. The best combination "
+                    "is highlighted at the top."
+                )
+                st.dataframe(tuning_display, width="stretch", hide_index=True)
+                st.download_button(
+                    "Download full tuning results CSV",
+                    data=tuning_results.to_csv(index=False).encode("utf-8"),
+                    file_name="knn_tuning_results.csv",
+                    mime="text/csv",
+                )
+            else:
+                st.info(
+                    "Tuning results not available. "
+                    "Run `python train_knn.py` first."
+                )
         else:
             st.pyplot(
                 create_confusion_matrix_chart(selected_metrics["confusion_matrix"]),

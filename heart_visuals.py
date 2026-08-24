@@ -238,6 +238,86 @@ def save_rf_visualizations(
     plt.close(fig_imp)
 
 
+def create_knn_tuning_chart(tuning_results: pd.DataFrame):
+    """Return a matplotlib Figure showing CV accuracy vs k for each param combination.
+
+    Parameters
+    ----------
+    tuning_results:
+        DataFrame produced by ``tune_knn_hyperparameters()``, containing at least
+        the columns ``n_neighbors``, ``weights``, ``metric``,
+        ``CV Accuracy Mean``, and ``CV Accuracy Std``.
+    """
+    combos = (
+        tuning_results[["weights", "metric"]]
+        .drop_duplicates()
+        .sort_values(["weights", "metric"])
+        .reset_index(drop=True)
+    )
+
+    palette = ["#2563eb", "#dc2626", "#16a34a", "#9333ea"]
+    line_styles = ["-", "--", "-.", ":"]
+
+    fig, ax = plt.subplots(figsize=(9.5, 5.2))
+
+    for idx, row in combos.iterrows():
+        mask = (
+            (tuning_results["weights"] == row["weights"])
+            & (tuning_results["metric"] == row["metric"])
+        )
+        subset = tuning_results[mask].sort_values("n_neighbors")
+        k_vals = subset["n_neighbors"].tolist()
+        acc_mean = (subset["CV Accuracy Mean"] * 100).tolist()
+        acc_std = (subset["CV Accuracy Std"] * 100).tolist()
+
+        color = palette[idx % len(palette)]
+        ls = line_styles[idx % len(line_styles)]
+        label = f"{row['weights']}, {row['metric']}"
+
+        ax.plot(k_vals, acc_mean, marker="o", color=color, linestyle=ls,
+                linewidth=1.8, markersize=5, label=label)
+        ax.fill_between(
+            k_vals,
+            [m - s for m, s in zip(acc_mean, acc_std)],
+            [m + s for m, s in zip(acc_mean, acc_std)],
+            color=color, alpha=0.08,
+        )
+
+    # Highlight the best point
+    best = tuning_results.iloc[0]
+    ax.axvline(
+        best["n_neighbors"], color="#6b7280", linewidth=1,
+        linestyle="--", alpha=0.6,
+    )
+    ax.annotate(
+        f"Best: k={int(best['n_neighbors'])}\n{best['weights']}, {best['metric']}\n"
+        f"{best['CV Accuracy Mean'] * 100:.1f}%",
+        xy=(best["n_neighbors"], best["CV Accuracy Mean"] * 100),
+        xytext=(best["n_neighbors"] + 1.2, best["CV Accuracy Mean"] * 100 - 3),
+        fontsize=8.5,
+        color="#111827",
+        arrowprops=dict(arrowstyle="->", color="#6b7280", lw=1),
+    )
+
+    ax.set_title(
+        "KNN Hyperparameter Tuning\n"
+        "5-fold Stratified CV Accuracy vs Number of Neighbours (k)",
+        pad=12,
+    )
+    ax.set_xlabel("k (n_neighbors)")
+    ax.set_ylabel("CV Accuracy (%)")
+    ax.set_xticks(tuning_results["n_neighbors"].unique())
+    ax.set_ylim(
+        max(0, tuning_results["CV Accuracy Mean"].min() * 100 - 6),
+        min(100, tuning_results["CV Accuracy Mean"].max() * 100 + 6),
+    )
+    ax.grid(axis="y", linestyle="--", alpha=0.35)
+    ax.legend(loc="lower right", fontsize=8.5, framealpha=0.85)
+
+    fig.tight_layout()
+    return fig
+
+
 def save_knn_visualizations(
     metric_table: pd.DataFrame,
     confusion_matrix: list[list[int]],
