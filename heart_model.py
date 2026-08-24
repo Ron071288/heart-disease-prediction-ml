@@ -115,8 +115,10 @@ MODEL_OPTIONS = {
         random_state=RANDOM_STATE,
     ),
     KNN_MODEL_NAME: KNeighborsClassifier(
-        n_neighbors=11,
+        n_neighbors=11,      # best from tune_knn_hyperparameters() grid search
+        weights="distance",  # distance-weighted voting outperforms uniform
         metric="minkowski",
+        p=1,                 # Manhattan distance (p=1) outperforms Euclidean (p=2)
         n_jobs=1,
     ),
 }
@@ -420,6 +422,99 @@ def evaluate_logistic_experiments(df: pd.DataFrame) -> pd.DataFrame:
             )
 
     return pd.DataFrame(rows)
+
+
+def tune_knn_hyperparameters(
+    df: pd.DataFrame,
+    n_neighbors_range: list[int] | None = None,
+    drop_duplicates: bool = True,
+) -> pd.DataFrame:
+    """Search over KNN hyperparameters using StratifiedKFold cross-validation.
+
+    Tuning is performed exclusively on the training split — the held-out test
+    set is never seen during this step, preserving honest final evaluation.
+
+    Parameters
+    ----------
+    df:
+        Raw dataset as returned by ``load_dataset``.
+    n_neighbors_range:
+        Odd values of k to evaluate.  Defaults to ``range(3, 26, 2)``.
+    drop_duplicates:
+        Whether to remove duplicate rows before splitting, consistent with
+        the rest of the training pipeline.
+
+    Returns
+    -------
+    pd.DataFrame
+        One row per (k, weights, p) combination with CV accuracy mean/std,
+        sorted by mean CV accuracy descending.
+    """
+    if n_neighbors_range is None:
+        n_neighbors_range = list(range(3, 26, 2))  # odd numbers 3..25
+
+    cleaned = clean_dataset(df, drop_duplicates=drop_duplicates)
+    X, y = split_features_target(cleaned)
+
+    X_train, _X_test, y_train, _y_test = train_test_split(
+        X,
+        y,
+        test_size=0.2,
+        random_state=RANDOM_STATE,
+        stratify=y,
+    )
+
+    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=RANDOM_STATE)
+
+    param_grid = [
+        {"weights": w, "p": p}
+        for w in ("uniform", "distance")
+        for p in (1, 2)
+    ]
+
+    rows = []
+    for k in n_neighbors_range:
+        for params in param_grid:
+            pipeline = Pipeline(
+                steps=[
+                    ("preprocessor", build_preprocessor(X_train)),
+                    (
+                        "classifier",
+                        KNeighborsClassifier(
+                            n_neighbors=k,
+                            weights=params["weights"],
+                            metric="minkowski",
+                            p=params["p"],
+                            n_jobs=1,
+                        ),
+                    ),
+                ]
+            )
+            cv_scores = cross_validate(
+                pipeline,
+                X_train,
+                y_train,
+                cv=cv,
+                scoring=["accuracy", "f1"],
+                n_jobs=1,
+            )
+            rows.append(
+                {
+                    "n_neighbors": k,
+                    "weights": params["weights"],
+                    "metric": f"minkowski (p={params['p']})",
+                    "p": params["p"],
+                    "CV Accuracy Mean": cv_scores["test_accuracy"].mean(),
+                    "CV Accuracy Std": cv_scores["test_accuracy"].std(),
+                    "CV F1 Mean": cv_scores["test_f1"].mean(),
+                    "CV F1 Std": cv_scores["test_f1"].std(),
+                }
+            )
+
+    results = pd.DataFrame(rows).sort_values(
+        ["CV Accuracy Mean", "CV F1 Mean"], ascending=False
+    ).reset_index(drop=True)
+    return results
 
 
 def metrics_to_table(metrics: dict[str, dict[str, Any]]) -> pd.DataFrame:
