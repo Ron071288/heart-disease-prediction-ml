@@ -1,9 +1,19 @@
 from __future__ import annotations
 
 import argparse
-import textwrap
 from pathlib import Path
 
+from console_format import (
+    print_confusion_matrix,
+    print_feature_effects,
+    print_feature_importances,
+    print_header,
+    print_key_values,
+    print_metric_table,
+    print_output_location,
+    print_score_line,
+    print_section,
+)
 from heart_model import (
     FINAL_LOGISTIC_VARIANT,
     KNN_MODEL_NAME,
@@ -18,13 +28,6 @@ from heart_model import (
     train_models,
 )
 from heart_visuals import save_visualizations
-
-
-def format_metric_table(table):
-    display_table = table.copy()
-    for column in ["Accuracy", "Precision", "Recall", "F1-score"]:
-        display_table[column] = display_table[column].map(lambda value: f"{value * 100:.2f}%")
-    return display_table
 
 
 def parse_args() -> argparse.Namespace:
@@ -46,96 +49,67 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def print_scores(model_name: str, model_metrics: dict) -> None:
-    print(f"{model_name} performance")
-    print(
-        "Scores                   : "
-        f"Accuracy {model_metrics['accuracy'] * 100:.2f}%, "
-        f"Precision {model_metrics['precision'] * 100:.2f}%, "
-        f"Recall {model_metrics['recall'] * 100:.2f}%, "
-        f"F1 {model_metrics['f1_score'] * 100:.2f}%"
-    )
-    tn, fp = model_metrics["confusion_matrix"][0]
-    fn, tp = model_metrics["confusion_matrix"][1]
-    print(f"Confusion matrix         : TN={tn}, FP={fp}, FN={fn}, TP={tp}")
-
-
 def main() -> None:
     args = parse_args()
     df = load_dataset(args.csv)
     analysis = dataset_analysis(df)
 
-    print("=" * 76)
-    print("HEART DISEASE PREDICTION - GROUP MODEL COMPARISON")
-    print("=" * 76)
-    print()
+    print_header("HEART DISEASE PREDICTION - GROUP MODEL COMPARISON")
 
-    print("1. DATASET & SHARED WORKFLOW")
-    print("-" * 76)
-    print(f"Raw dataset              : {analysis['raw_rows']} samples, {analysis['columns']} columns")
-    print(f"Duplicate rows removed   : {analysis['duplicates']}")
-    print(f"Training samples used    : {analysis['deduplicated_rows']}")
-    print(
-        "Training class balance   : "
-        f"{analysis['deduplicated_no_heart_disease']} no disease / "
-        f"{analysis['deduplicated_heart_disease']} disease"
+    print_section(1, "Dataset and Shared Workflow")
+    print_key_values(
+        [
+            ("Raw dataset", f"{analysis['raw_rows']} samples, {analysis['columns']} columns"),
+            ("Duplicate rows removed", str(analysis["duplicates"])),
+            ("Training samples used", str(analysis["deduplicated_rows"])),
+            (
+                "Training class balance",
+                f"{analysis['deduplicated_no_heart_disease']} no disease / "
+                f"{analysis['deduplicated_heart_disease']} disease",
+            ),
+            ("Split", "80% training / 20% testing"),
+            ("Preprocessing", "duplicate removal, scaling, one-hot encoding"),
+            ("Comparison standard", "same cleaned data, split, preprocessing, and metrics"),
+        ]
     )
-    print("Split & preprocessing    : 80/20 split, scaling, one-hot encoding")
-    print("Fair comparison standard : same cleaned data, split, preprocessing, and metrics")
-    print()
 
     models, metrics, _, _ = train_models(df)
     comparison = metrics_to_table(metrics)
 
-    print("2. MODEL COMPARISON")
-    print("-" * 76)
-    print(format_metric_table(comparison).to_string(index=False))
-    print()
+    print_section(2, "Model Comparison")
+    print_metric_table(comparison)
 
-    print("3. SHORT MODEL DETAILS")
-    print("-" * 76)
-    print_scores(LOGISTIC_MODEL_NAME, metrics[LOGISTIC_MODEL_NAME])
-    print(f"Setup                    : {FINAL_LOGISTIC_VARIANT}")
-    print()
-    print_scores(RANDOM_FOREST_MODEL_NAME, metrics[RANDOM_FOREST_MODEL_NAME])
-    print("Setup                    : 200 trees, max_depth=8, max_features=sqrt")
-    print()
-    print_scores(KNN_MODEL_NAME, metrics[KNN_MODEL_NAME])
-    print("Setup                    : n_neighbors=11, metric=minkowski")
-    print()
+    print_section(3, "Model Details")
+    model_setups = [
+        (LOGISTIC_MODEL_NAME, FINAL_LOGISTIC_VARIANT),
+        (RANDOM_FOREST_MODEL_NAME, "200 trees, max_depth=8, max_features=sqrt"),
+        (KNN_MODEL_NAME, "n_neighbors=11, weights=distance, metric=Manhattan"),
+    ]
+    for model_name, setup in model_setups:
+        print(model_name)
+        print("-" * len(model_name))
+        print_key_values([("Setup", setup)])
+        print_score_line(metrics[model_name])
+        print_confusion_matrix(metrics[model_name])
 
-    print("4. TOP 8 LOGISTIC REGRESSION FEATURE EFFECTS")
-    print("-" * 76)
-    print("Positive = toward disease; negative = toward no disease.")
-    print("Full coefficient list is saved to artifacts/logistic_regression_coefficients.csv.")
+    print_section(4, "Top Logistic Regression Feature Effects")
     coefficients = logistic_regression_coefficients(models[LOGISTIC_MODEL_NAME])
-    print(f"{'No.':<4} {'Feature':<52} {'Direction':<25} {'Coef.':>8}")
-    print("-" * 96)
-    for row_number, row in enumerate(coefficients.head(8).itertuples(), start=1):
-        direction = (
-            "Toward disease"
-            if row.Direction == "Toward heart disease"
-            else "Toward no disease"
-        )
-        feature = textwrap.shorten(row.Feature, width=52, placeholder="...")
-        print(f"{row_number:<4} {feature:<52} {direction:<25} {row.Coefficient:>8.4f}")
-    print()
+    print_feature_effects(coefficients)
 
-    print("5. RANDOM FOREST FEATURE IMPORTANCES")
-    print("-" * 76)
+    print_section(5, "Random Forest Feature Importances")
     importances = random_forest_feature_importances(models[RANDOM_FOREST_MODEL_NAME])
-    print(f"{'No.':<4} {'Feature':<52} {'Importance':>12}")
-    print("-" * 76)
-    for row_number, row in enumerate(importances.head(8).itertuples(), start=1):
-        feature = textwrap.shorten(row.Feature, width=52, placeholder="...")
-        print(f"{row_number:<4} {feature:<52} {row.Importance:>12.4f}")
-    print()
+    print_feature_importances(importances)
 
-    print("6. KNN FEATURE NOTE")
-    print("-" * 76)
-    print("KNN is distance-based, so it does not produce coefficients or feature importances.")
-    print("Its performance is compared using the same accuracy, precision, recall, F1, and confusion matrix.")
-    print()
+    print_section(6, "KNN Explanation Note")
+    print_key_values(
+        [
+            ("Feature explanation", "KNN is distance-based, so it has no coefficients."),
+            (
+                "Evaluation",
+                "Compared using the same accuracy, precision, recall, F1-score, and confusion matrix.",
+            ),
+        ]
+    )
 
     output_dir = Path(args.output)
     save_artifacts(models, metrics, output_dir)
@@ -145,15 +119,19 @@ def main() -> None:
         coefficients,
         output_dir,
     )
-    print("7. OUTPUT")
-    print("-" * 76)
-    print(f"Artifacts saved to: {output_dir.resolve()}")
-    print("Charts saved:")
-    print("- model_comparison_chart.png")
-    print("- metrics_chart.png")
-    print("- confusion_matrix.png")
-    print("- feature_coefficients.png")
-    print("Run prototype: python -m streamlit run app.py")
+    print_section(7, "Output Files")
+    print_output_location(
+        output_dir,
+        [
+            "model_comparison.csv",
+            "metrics.json",
+            "trained .joblib model files",
+            "model_comparison_chart.png",
+            "metrics_chart.png",
+            "confusion_matrix.png",
+            "feature_coefficients.png",
+        ],
+    )
 
 
 if __name__ == "__main__":

@@ -3,6 +3,15 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+from console_format import (
+    print_confusion_matrix,
+    print_header,
+    print_key_values,
+    print_metric_table,
+    print_output_location,
+    print_score_line,
+    print_section,
+)
 import heart_model as hm
 from heart_model import (
     KNN_MODEL_NAME,
@@ -17,13 +26,6 @@ from heart_model import (
 from sklearn.neighbors import KNeighborsClassifier
 
 from heart_visuals import save_knn_visualizations
-
-
-def format_metric_table(table):
-    display_table = table.copy()
-    for column in ["Accuracy", "Precision", "Recall", "F1-score"]:
-        display_table[column] = display_table[column].map(lambda value: f"{value * 100:.2f}%")
-    return display_table
 
 
 def parse_args() -> argparse.Namespace:
@@ -55,45 +57,50 @@ def main() -> None:
     df = load_dataset(args.csv)
     analysis = dataset_analysis(df)
 
-    print("=" * 76)
-    print("HEART DISEASE PREDICTION - K-NEAREST NEIGHBORS")
-    print("=" * 76)
-    print()
+    print_header("HEART DISEASE PREDICTION - K-NEAREST NEIGHBORS")
 
-    print("1. DATASET & WORKFLOW")
-    print("-" * 76)
-    print(f"Raw dataset              : {analysis['raw_rows']} samples, {analysis['columns']} columns")
-    print(f"Duplicate rows removed   : {analysis['duplicates']}")
-    print(f"Training samples used    : {analysis['deduplicated_rows']}")
-    print(
-        "Training class balance   : "
-        f"{analysis['deduplicated_no_heart_disease']} no disease / "
-        f"{analysis['deduplicated_heart_disease']} disease"
+    print_section(1, "Dataset and Workflow")
+    print_key_values(
+        [
+            ("Raw dataset", f"{analysis['raw_rows']} samples, {analysis['columns']} columns"),
+            ("Duplicate rows removed", str(analysis["duplicates"])),
+            ("Training samples used", str(analysis["deduplicated_rows"])),
+            (
+                "Training class balance",
+                f"{analysis['deduplicated_no_heart_disease']} no disease / "
+                f"{analysis['deduplicated_heart_disease']} disease",
+            ),
+            ("Split", "80% training / 20% testing"),
+            ("Preprocessing", "duplicate removal, scaling, one-hot encoding"),
+        ]
     )
-    print("Split & preprocessing    : 80/20 split, scaling, one-hot encoding")
-    print()
 
     # ------------------------------------------------------------------
     # 2. HYPERPARAMETER TUNING (training set / cross-validation only)
     # ------------------------------------------------------------------
     if not args.skip_tuning:
-        print("2. KNN HYPERPARAMETER TUNING (5-fold StratifiedKFold on training set)")
-        print("-" * 76)
-        print("Searching: n_neighbors in {3,5,...,25}, weights in {uniform,distance},")
-        print("           metric = minkowski with p in {1 (Manhattan), 2 (Euclidean)}")
-        print("(Test set is never touched during this step.)")
-        print()
+        print_section(2, "KNN Hyperparameter Tuning")
+        print_key_values(
+            [
+                ("Validation method", "5-fold StratifiedKFold on training set only"),
+                ("k values", "3, 5, 7, ..., 25"),
+                ("Weights", "uniform, distance"),
+                ("Distance metrics", "Manhattan and Euclidean"),
+                ("Test-set rule", "not used during tuning"),
+            ]
+        )
 
         tuning_results = tune_knn_hyperparameters(df)
 
         # ---- Print top-10 combinations by CV accuracy ----
+        print("Top tuning results")
         print(f"{'Rank':<5} {'k':<5} {'Weights':<10} {'Metric':<22} "
-              f"{'CV Acc Mean':>12} {'CV Acc Std':>11} {'CV F1 Mean':>11}")
-        print("-" * 76)
+              f"{'CV Acc':>10} {'CV Std':>10} {'CV F1':>10}")
+        print("-" * 78)
         for rank, row in enumerate(tuning_results.head(10).itertuples(), start=1):
             print(
                 f"{rank:<5} {row.n_neighbors:<5} {row.weights:<10} {row.metric:<22} "
-                f"{row._5 * 100:>11.2f}% {row._6 * 100:>10.2f}% {row._7 * 100:>10.2f}%"
+                f"{row._5 * 100:>9.2f}% {row._6 * 100:>9.2f}% {row._7 * 100:>9.2f}%"
             )
         print()
 
@@ -104,13 +111,18 @@ def main() -> None:
         best_p = int(best["p"])
         best_metric_label = str(best["metric"])
 
-        print(
-            f"Best combination         : k={best_k}, weights={best_weights!r}, "
-            f"metric={best_metric_label}"
-        )
-        print(
-            f"Best CV accuracy         : {best['CV Accuracy Mean'] * 100:.2f}% "
-            f"(±{best['CV Accuracy Std'] * 100:.2f}%)"
+        print_key_values(
+            [
+                (
+                    "Best combination",
+                    f"k={best_k}, weights={best_weights!r}, metric={best_metric_label}",
+                ),
+                (
+                    "Best CV accuracy",
+                    f"{best['CV Accuracy Mean'] * 100:.2f}% "
+                    f"(+/- {best['CV Accuracy Std'] * 100:.2f}%)",
+                ),
+            ]
         )
         print()
 
@@ -122,8 +134,7 @@ def main() -> None:
                        "CV Accuracy Mean", "CV Accuracy Std",
                        "CV F1 Mean", "CV F1 Std"]
         tuning_results[report_cols].to_csv(tuning_csv, index=False, float_format="%.6f")
-        print(f"Full tuning grid saved   : {tuning_csv.resolve()}")
-        print()
+        print_key_values([("Full tuning grid saved", str(tuning_csv.resolve()))])
 
         # ---- Patch MODEL_OPTIONS so train_models() uses best params ----
         hm.MODEL_OPTIONS[KNN_MODEL_NAME] = KNeighborsClassifier(
@@ -145,8 +156,8 @@ def main() -> None:
             f"metric={current.metric} (p={current.p}) [pre-set defaults, tuning skipped]"
         )
 
-    print("KNN setup                :", knn_setup_label)
-    print()
+    print_section(3, "Selected KNN Setup")
+    print_key_values([("KNN setup", knn_setup_label)])
 
     # ------------------------------------------------------------------
     # 3. TRAIN ON FULL TRAINING SET, EVALUATE ON HELD-OUT TEST SET
@@ -154,22 +165,13 @@ def main() -> None:
     models, metrics, _, _ = train_models(df, selected_models=[KNN_MODEL_NAME])
     comparison = metrics_to_table(metrics)
 
-    print("3. KNN RESULT (held-out test set)")
-    print("-" * 76)
-    print(format_metric_table(comparison).to_string(index=False))
+    print_section(4, "Final Test Result")
+    print_metric_table(comparison)
 
     knn_metrics = metrics[KNN_MODEL_NAME]
-    print()
-    print(
-        "Scores                   : "
-        f"Accuracy {knn_metrics['accuracy'] * 100:.2f}%, "
-        f"Precision {knn_metrics['precision'] * 100:.2f}%, "
-        f"Recall {knn_metrics['recall'] * 100:.2f}%, "
-        f"F1 {knn_metrics['f1_score'] * 100:.2f}%"
-    )
-    tn, fp = knn_metrics["confusion_matrix"][0]
-    fn, tp = knn_metrics["confusion_matrix"][1]
-    print(f"Confusion matrix         : TN={tn}, FP={fp}, FN={fn}, TP={tp}")
+    print_section(5, "Model Detail")
+    print_score_line(knn_metrics)
+    print_confusion_matrix(knn_metrics)
 
     output_dir = Path(args.output)
     save_artifacts(models, metrics, output_dir)
@@ -178,16 +180,16 @@ def main() -> None:
         knn_metrics["confusion_matrix"],
         output_dir,
     )
-    print()
-    print("4. OUTPUT")
-    print("-" * 76)
-    print(f"Artifacts saved to: {output_dir.resolve()}")
-    print("Charts saved:")
-    print("- metrics_chart.png")
-    print("- confusion_matrix.png")
+    print_section(6, "Output Files")
+    output_files = [
+        "knearest_neighbors.joblib",
+        "metrics.json",
+        "metrics_chart.png",
+        "confusion_matrix.png",
+    ]
     if not args.skip_tuning:
-        print("- knn_tuning_results.csv  (methodology report data)")
-    print("Run prototype: python -m streamlit run app.py")
+        output_files.append("knn_tuning_results.csv")
+    print_output_location(output_dir, output_files)
 
 
 if __name__ == "__main__":
