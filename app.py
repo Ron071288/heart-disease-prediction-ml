@@ -12,7 +12,6 @@ from heart_model import (
     load_dataset,
     logistic_regression_coefficients,
     metrics_to_table,
-    patient_prediction_contributions,
     random_forest_feature_importances,
     train_models,
 )
@@ -23,6 +22,10 @@ from heart_visuals import (
     create_knn_tuning_chart,
     create_model_comparison_chart,
 )
+
+
+DEVELOPER_USERNAME = "ron123"
+DEVELOPER_PASSWORD = "admin123"
 
 
 DISPLAY_LABELS = {
@@ -79,13 +82,6 @@ NUMERIC_INPUT_SETTINGS = {
 }
 
 
-FRONTEND_MODEL_OPTIONS = [
-    LOGISTIC_MODEL_NAME,
-    RANDOM_FOREST_MODEL_NAME,
-    KNN_MODEL_NAME,
-]
-
-
 st.set_page_config(
     page_title="Heart Disease Prediction",
     layout="wide",
@@ -112,6 +108,27 @@ def format_metric_table(table: pd.DataFrame) -> pd.DataFrame:
     for column in ["Accuracy", "Precision", "Recall", "F1-score"]:
         display_table[column] = display_table[column].map(lambda value: f"{value * 100:.2f}%")
     return display_table
+
+
+def select_best_prediction_model(model_metrics: dict) -> str | None:
+    if not model_metrics:
+        return None
+
+    return max(
+        model_metrics,
+        key=lambda model_name: (
+            model_metrics[model_name]["accuracy"],
+            model_metrics[model_name]["precision"],
+            model_metrics[model_name]["recall"],
+            model_metrics[model_name]["f1_score"],
+        ),
+    )
+
+
+def model_display_name(model_name: str) -> str:
+    if model_name == LOGISTIC_MODEL_NAME:
+        return FINAL_LOGISTIC_VARIANT
+    return model_name
 
 
 def numeric_input(column_name: str, series: pd.Series):
@@ -173,18 +190,59 @@ def user_input_form(df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame([user_values])
 
 
-st.title("Heart Disease Prediction")
-st.caption("Interactive Machine Learning Model Prototype")
+if "developer_authenticated" not in st.session_state:
+    st.session_state.developer_authenticated = False
+if "show_developer_login" not in st.session_state:
+    st.session_state.show_developer_login = False
+
+title_column, action_column = st.columns([4, 1])
+with title_column:
+    st.title("Heart Disease Prediction")
+    st.caption("Interactive Machine Learning Model Prototype")
+with action_column:
+    st.write("")
+    st.write("")
+    if st.session_state.developer_authenticated:
+        if st.button("Log out", width="stretch"):
+            st.session_state.developer_authenticated = False
+            st.session_state.show_developer_login = False
+            st.rerun()
+    else:
+        login_button_label = (
+            "Patient View" if st.session_state.show_developer_login else "Developer Login"
+        )
+        if st.button(login_button_label, width="stretch"):
+            st.session_state.show_developer_login = not st.session_state.show_developer_login
+            st.rerun()
+
 st.info("This prototype is for academic demonstration only and is not a medical diagnosis tool.")
 
-with st.sidebar:
-    st.header("Dataset")
-    local_csv = st.text_input(
-        "Optional local CSV path",
-        value="",
-        help="Leave empty to load the Kaggle dataset using KaggleHub.",
-    )
-    csv_path = local_csv.strip() or None
+if (
+    not st.session_state.developer_authenticated
+    and st.session_state.show_developer_login
+):
+    with st.container(border=True):
+        st.subheader("Developer Login")
+        st.caption("Sign in to view dataset analysis, model comparison, and backend outputs.")
+        login_left, _login_right = st.columns([1, 2])
+        with login_left:
+            username = st.text_input("Username", key="developer_login_username")
+            password = st.text_input(
+                "Password",
+                type="password",
+                key="developer_login_password",
+            )
+            if st.button("Login", type="primary"):
+                if username == DEVELOPER_USERNAME and password == DEVELOPER_PASSWORD:
+                    st.session_state.developer_authenticated = True
+                    st.session_state.show_developer_login = False
+                    st.rerun()
+                else:
+                    st.error("Invalid developer credentials")
+            st.caption("Demo credentials: ron123 / admin123")
+    st.stop()
+
+csv_path = None
 
 try:
     df = get_dataset(csv_path)
@@ -195,85 +253,39 @@ except Exception as exc:
 
 analysis = dataset_analysis(df)
 metric_table = metrics_to_table(metrics)
+best_model_name = select_best_prediction_model(metrics)
 
-st.subheader("1. Patient Prediction")
-model_column, backend_column = st.columns(2)
-with model_column:
-    selected_frontend_model = st.selectbox(
-        "Select model",
-        options=FRONTEND_MODEL_OPTIONS,
-        help="Select a trained machine learning model from the group to perform predictions.",
+if not st.session_state.developer_authenticated:
+    st.subheader("Patient Prediction")
+    patient_input = user_input_form(df)
+
+    if st.button("Predict Heart Disease", type="primary"):
+        if best_model_name is None or best_model_name not in models:
+            st.warning("No trained prediction model is available.")
+        else:
+            model = models[best_model_name]
+            prediction = int(model.predict(patient_input)[0])
+
+            probability_text = ""
+            if hasattr(model.named_steps["classifier"], "predict_proba"):
+                probability = model.predict_proba(patient_input)[0][1]
+                probability_text = f"Predicted probability of heart disease: {probability:.2%}"
+
+            if prediction == 1:
+                st.error("Prediction result: Heart disease detected")
+            else:
+                st.success("Prediction result: No heart disease detected")
+
+            if probability_text:
+                st.info(probability_text)
+
+else:
+    st.subheader("Developer Backend View")
+    st.caption(
+        "Backend view contains dataset analysis, model comparison, evaluation charts, "
+        "and model explanation outputs."
     )
 
-is_model_available = selected_frontend_model in models
-selected_model_name = selected_frontend_model if is_model_available else None
-backend_desc = selected_model_name or "Not Implemented"
-if selected_model_name == LOGISTIC_MODEL_NAME:
-    backend_desc = FINAL_LOGISTIC_VARIANT
-
-with backend_column:
-    st.text_input("Selected backend model", value=backend_desc, disabled=True)
-
-patient_input = user_input_form(df)
-
-if st.button("Predict Heart Disease", type="primary"):
-    if not is_model_available or selected_model_name is None:
-        st.warning(f"The model '{selected_frontend_model}' has not been trained or integrated yet.")
-    else:
-        model = models[selected_model_name]
-        prediction = int(model.predict(patient_input)[0])
-
-        probability_text = ""
-        if hasattr(model.named_steps["classifier"], "predict_proba"):
-            probability = model.predict_proba(patient_input)[0][1]
-            probability_text = f"Predicted probability of heart disease: {probability:.2%}"
-
-        if prediction == 1:
-            st.error("Prediction result: Heart disease detected")
-        else:
-            st.success("Prediction result: No heart disease detected")
-
-        if probability_text:
-            st.info(probability_text)
-
-        st.caption(
-            f"Frontend selected model: {selected_frontend_model} | "
-            f"Backend prediction model: {backend_desc}"
-        )
-
-        if selected_model_name == LOGISTIC_MODEL_NAME:
-            st.subheader("This Patient's Explanation")
-            contribution_table = patient_prediction_contributions(
-                model,
-                patient_input,
-                top_n=10,
-            )
-            st.dataframe(contribution_table, width="stretch", hide_index=True)
-            st.caption(
-                "Positive contribution pushes the prediction toward heart disease. "
-                "Negative contribution pushes it toward no heart disease."
-            )
-
-            with st.expander("View all feature effects for this patient", expanded=False):
-                all_contributions = patient_prediction_contributions(
-                    model,
-                    patient_input,
-                    top_n=None,
-                )
-                st.dataframe(all_contributions, width="stretch", hide_index=True)
-                st.download_button(
-                    "Download patient feature effects CSV",
-                    data=all_contributions.to_csv(index=False).encode("utf-8"),
-                    file_name="patient_feature_effects.csv",
-                    mime="text/csv",
-                )
-
-        st.write("Patient input used for prediction")
-        st.dataframe(patient_input, width="stretch")
-
-st.divider()
-
-with st.expander("2. Model Analysis and Charts", expanded=False):
     st.subheader("Dataset Summary")
     metric_columns = st.columns(4)
     metric_columns[0].metric("Raw samples", analysis["raw_rows"])
@@ -293,27 +305,37 @@ with st.expander("2. Model Analysis and Charts", expanded=False):
     st.dataframe(format_metric_table(metric_table), width="stretch", hide_index=True)
     st.pyplot(create_model_comparison_chart(metric_table), width="stretch")
 
-    if is_model_available and selected_model_name is not None:
-        selected_metrics = metrics[selected_model_name]
-        st.subheader("Selected Model Performance")
-        st.write(f"**{backend_desc}**")
+    st.subheader("All Model Details")
+    for model_name in [LOGISTIC_MODEL_NAME, RANDOM_FOREST_MODEL_NAME, KNN_MODEL_NAME]:
+        if model_name not in models or model_name not in metrics:
+            continue
+
+        selected_metrics = metrics[model_name]
+        if model_name == LOGISTIC_MODEL_NAME:
+            st.markdown("### Logistic Regression Model")
+            st.caption(f"Setup: {FINAL_LOGISTIC_VARIANT}")
+        else:
+            st.markdown(f"### {model_display_name(model_name)}")
         score_columns = st.columns(4)
         score_columns[0].metric("Accuracy", f"{selected_metrics['accuracy']:.2%}")
         score_columns[1].metric("Precision", f"{selected_metrics['precision']:.2%}")
         score_columns[2].metric("Recall", f"{selected_metrics['recall']:.2%}")
         score_columns[3].metric("F1-score", f"{selected_metrics['f1_score']:.2%}")
 
-        if selected_model_name == LOGISTIC_MODEL_NAME:
+        if model_name == LOGISTIC_MODEL_NAME:
             coefficient_table = logistic_regression_coefficients(models[LOGISTIC_MODEL_NAME])
             st.subheader("Global Model Explanation")
             st.caption(
                 "These charts explain how the trained model behaves overall, not only one patient."
             )
-            st.pyplot(
-                create_confusion_matrix_chart(selected_metrics["confusion_matrix"]),
-                width="content",
-            )
-            st.pyplot(create_feature_coefficient_chart(coefficient_table), width="stretch")
+            left_chart, right_chart = st.columns([0.9, 1.1])
+            with left_chart:
+                st.pyplot(
+                    create_confusion_matrix_chart(selected_metrics["confusion_matrix"]),
+                    width="stretch",
+                )
+            with right_chart:
+                st.pyplot(create_feature_coefficient_chart(coefficient_table), width="stretch")
 
             with st.expander("View all model feature coefficients", expanded=False):
                 st.caption(
@@ -335,7 +357,7 @@ with st.expander("2. Model Analysis and Charts", expanded=False):
                     file_name="logistic_regression_all_coefficients.csv",
                     mime="text/csv",
                 )
-        elif selected_model_name == RANDOM_FOREST_MODEL_NAME:
+        elif model_name == RANDOM_FOREST_MODEL_NAME:
             importance_table = random_forest_feature_importances(
                 models[RANDOM_FOREST_MODEL_NAME]
             )
@@ -347,7 +369,7 @@ with st.expander("2. Model Analysis and Charts", expanded=False):
                 )
             with right_chart:
                 st.pyplot(create_feature_importance_chart(importance_table), width="stretch")
-        elif selected_model_name == KNN_MODEL_NAME:
+        elif model_name == KNN_MODEL_NAME:
             import os as _os
 
             _artifacts_dir = _os.path.join(
@@ -401,12 +423,7 @@ with st.expander("2. Model Analysis and Charts", expanded=False):
                     "Tuning results not available. "
                     "Run `python train_knn.py` first."
                 )
-        else:
-            st.pyplot(
-                create_confusion_matrix_chart(selected_metrics["confusion_matrix"]),
-                width="stretch",
-            )
-    else:
-        st.info("Please select a trained model to view performance details.")
+
+        st.divider()
 
 st.caption("Academic prototype only. Prediction results should not be used as medical advice.")
