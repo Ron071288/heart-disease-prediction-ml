@@ -96,6 +96,7 @@ def main() -> None:
         output_dir,
         [
             "random_forest.joblib",
+            "random_forest_importances.csv",
             "metrics.json",
             "metrics_chart.png",
             "confusion_matrix.png",
