@@ -1,3 +1,13 @@
+"""
+Shared machine learning utilities for the heart disease prediction project.
+
+Ron's Logistic Regression implementation is defined here together with the
+group models. The important Logistic Regression parts are:
+- L1 regularisation with C=0.3 to control model complexity.
+- Interaction features so the model can learn combined effects between inputs.
+- Coefficient extraction so the model's feature effects can be explained.
+"""
+
 from __future__ import annotations
 
 import json
@@ -37,6 +47,7 @@ warnings.filterwarnings(
 
 
 DATASET_HANDLE = "mfarhaannazirkhan/heart-dataset"
+LOCAL_DATASET_PATH = Path(__file__).resolve().parent / "data" / "heart_disease_dataset.csv"
 TARGET_COLUMN = "target"
 RANDOM_STATE = 118
 CODED_CATEGORICAL_COLUMNS = [
@@ -94,10 +105,12 @@ CATEGORY_LABELS = {
 LOGISTIC_MODEL_NAME = "Logistic Regression"
 RANDOM_FOREST_MODEL_NAME = "Random Forest"
 KNN_MODEL_NAME = "K-Nearest Neighbors"
-BEST_MODEL_NAME = LOGISTIC_MODEL_NAME
 FINAL_LOGISTIC_VARIANT = "Tuned Logistic Regression + Interaction Features"
 
 
+# Main model configurations used by the group comparison. Ron's Logistic
+# Regression model is built separately in build_logistic_pipeline() because it
+# needs the optional interaction-feature step.
 MODEL_OPTIONS = {
     LOGISTIC_MODEL_NAME: LogisticRegression(
         C=0.3,
@@ -124,6 +137,9 @@ MODEL_OPTIONS = {
 }
 
 
+# Logistic Regression experiment settings. These variants help show how the
+# model improves from a baseline version to a tuned version, and finally to the
+# tuned version with interaction features.
 LOGISTIC_VARIANTS = {
     "Baseline Logistic Regression": {
         "classifier": LogisticRegression(
@@ -163,6 +179,9 @@ def load_dataset(local_csv: str | Path | None = None) -> pd.DataFrame:
         if not csv_path.exists():
             raise FileNotFoundError(f"CSV file not found: {csv_path}")
         return pd.read_csv(csv_path)
+
+    if LOCAL_DATASET_PATH.exists():
+        return pd.read_csv(LOCAL_DATASET_PATH)
 
     cached_csv = find_cached_kaggle_csv()
     if cached_csv:
@@ -287,12 +306,22 @@ def build_logistic_pipeline(
     X: pd.DataFrame,
     variant_name: str = "Tuned Logistic Regression + Interaction Features",
 ) -> Pipeline:
+    """Build Ron's Logistic Regression pipeline.
+
+    The pipeline keeps preprocessing inside the model workflow, so scaling,
+    encoding, and interaction-feature generation are learned from the training
+    data only. This helps avoid data leakage from the test set.
+    """
     if variant_name not in LOGISTIC_VARIANTS:
         raise ValueError(f"Unknown Logistic Regression variant: {variant_name}")
 
     variant = LOGISTIC_VARIANTS[variant_name]
     steps = [("preprocessor", build_preprocessor(X))]
     if variant["interactions"]:
+        # Interaction features combine pairs of existing transformed features.
+        # Example idea: age x cholesterol, or chest pain type x exercise angina.
+        # The model is still Logistic Regression; it simply receives richer
+        # input features that can represent combined medical patterns.
         steps.append(
             (
                 "interactions",
@@ -343,10 +372,14 @@ def train_models(
     selected_models: list[str] | None = None,
     drop_duplicates: bool = True,
 ) -> tuple[dict[str, Pipeline], dict[str, dict[str, Any]], pd.DataFrame, pd.Series]:
+    """Train selected models using the shared fair evaluation workflow."""
     cleaned = clean_dataset(df, drop_duplicates=drop_duplicates)
     X, y = split_features_target(cleaned)
     models_to_train = selected_models or list(MODEL_OPTIONS.keys())
 
+    # Stratify keeps the no-disease/disease ratio similar in train and test
+    # sets, which is important for fair evaluation on a medical classification
+    # dataset.
     X_train, X_test, y_train, y_test = train_test_split(
         X,
         y,
@@ -359,6 +392,8 @@ def train_models(
     metrics: dict[str, dict[str, Any]] = {}
 
     for model_name in models_to_train:
+        # Each model is trained only on X_train/y_train, then evaluated on the
+        # unseen 20% test set.
         pipeline = build_model_pipeline(model_name, X_train)
         pipeline.fit(X_train, y_train)
         predictions = pipeline.predict(X_test)
@@ -369,6 +404,7 @@ def train_models(
 
 
 def evaluate_logistic_experiments(df: pd.DataFrame) -> pd.DataFrame:
+    """Compare Logistic Regression variants for analysis and presentation."""
     rows = []
     scenarios = [
         ("Duplicate-removed dataset", True),
@@ -533,10 +569,19 @@ def metrics_to_table(metrics: dict[str, dict[str, Any]]) -> pd.DataFrame:
 
 
 def logistic_regression_coefficients(model: Pipeline) -> pd.DataFrame:
+    """Return readable Logistic Regression coefficients sorted by influence.
+
+    Positive coefficients push the prediction toward heart disease. Negative
+    coefficients push the prediction toward no heart disease. Larger absolute
+    values mean stronger influence on the model output.
+    """
     classifier = model.named_steps["classifier"]
     if not hasattr(classifier, "coef_"):
         raise ValueError("Selected model does not expose coefficients.")
 
+    # Start with the feature names after preprocessing. If interaction features
+    # were added, expand the names again so the coefficient table can show both
+    # single features and combined features.
     feature_names = model.named_steps["preprocessor"].get_feature_names_out()
     if "interactions" in model.named_steps:
         feature_names = model.named_steps["interactions"].get_feature_names_out(

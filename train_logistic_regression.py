@@ -1,3 +1,13 @@
+"""
+Ron Phua Jun Long - Logistic Regression training script.
+
+This file is the individual demo script for the Logistic Regression part of the
+heart disease prediction project. It loads the dataset, analyses the class
+balance and duplicates, trains the final tuned Logistic Regression model with
+interaction features, evaluates it on the 20% test set, explains the strongest
+coefficients, and saves the trained model plus charts into the artifacts folder.
+"""
+
 from __future__ import annotations
 
 import argparse
@@ -27,6 +37,7 @@ from heart_visuals import save_visualizations
 
 
 def parse_args() -> argparse.Namespace:
+    # Keep file paths configurable without changing the code during a demo.
     parser = argparse.ArgumentParser(
         description="Train and evaluate Logistic Regression heart disease prediction model."
     )
@@ -47,7 +58,13 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+
+    # Step 1: Load the included local dataset by default. If --csv is provided,
+    # that file is used instead.
     df = load_dataset(args.csv)
+
+    # Step 2: Summarise the raw dataset before training so the report can show
+    # sample count, class balance, and duplicate removal.
     analysis = dataset_analysis(df)
 
     print_header("HEART DISEASE PREDICTION - LOGISTIC REGRESSION")
@@ -69,9 +86,14 @@ def main() -> None:
         ]
     )
 
+    # Step 3: Train only Ron's Logistic Regression model. The shared
+    # train_models() function still applies the same 80/20 split and
+    # preprocessing pipeline used in the group comparison.
     models, metrics, _, _ = train_models(df, selected_models=[LOGISTIC_MODEL_NAME])
     comparison = metrics_to_table(metrics)
 
+    # Step 4: Print the final test-set performance using accuracy, precision,
+    # recall, F1-score, and confusion matrix.
     print_section(2, "Final Test Result")
     print_metric_table(comparison)
 
@@ -81,10 +103,15 @@ def main() -> None:
     print_score_line(logistic_metrics)
     print_confusion_matrix(logistic_metrics)
 
+    # Step 5: Logistic Regression is interpretable because the learned
+    # coefficients show which features push predictions toward disease or no
+    # disease.
     print_section(4, "Top Logistic Regression Feature Effects")
     coefficients = logistic_regression_coefficients(models[LOGISTIC_MODEL_NAME])
     print_feature_effects(coefficients)
 
+    # Step 6: Save reusable outputs for the Streamlit prototype and report:
+    # trained model, metrics, confusion matrix chart, and coefficient chart.
     output_dir = Path(args.output)
     save_artifacts(models, metrics, output_dir)
     save_visualizations(

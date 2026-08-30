@@ -7,10 +7,11 @@ This folder contains a heart disease prediction prototype using supervised machi
 Kaggle dataset:
 https://www.kaggle.com/datasets/mfarhaannazirkhan/heart-dataset/data
 
-The code can load the dataset in two ways:
+The code can load the dataset in three ways:
 
-1. Automatically using KaggleHub.
-2. From a local CSV file downloaded from Kaggle.
+1. From the included local CSV: `data/heart_disease_dataset.csv`.
+2. From a custom local CSV path supplied using `--csv`.
+3. Automatically using KaggleHub if the local dataset is not available.
 
 ## Install Dependencies
 
@@ -18,9 +19,27 @@ The code can load the dataset in two ways:
 pip install -r requirements.txt
 ```
 
+## Quick Start for Tutor
+
+Open a terminal in this folder, then run:
+
+```bash
+python train_all_models.py
+```
+
+This command trains and evaluates Logistic Regression, Random Forest, and K-Nearest Neighbors using the same dataset and prints the model comparison result.
+
+Then run the prototype:
+
+```bash
+python -m streamlit run app.py
+```
+
+Streamlit will show a local URL such as `http://localhost:8501`. Open that URL in a browser to use the prototype.
+
 ## Train and Evaluate All Models
 
-Automatically download from KaggleHub:
+Use the included local dataset:
 
 ```bash
 python train_all_models.py
@@ -53,7 +72,12 @@ Saved outputs:
 python -m streamlit run app.py
 ```
 
-The prototype lets the user choose a model, enter patient details, and view the prediction result. It also includes dataset analysis, model comparison, confusion matrix charts, and model-specific feature explanation where available.
+The prototype has two views:
+
+- Patient View: users enter patient details and view the prediction result. The system automatically uses the best available model based on model comparison results.
+- Developer View: authorised users can view dataset analysis, model comparison, confusion matrix charts, and model-specific explanations.
+
+Developer login credentials are configured in `app.py` and should be shared only with the tutor or authorised group members during the demo.
 
 ## Logistic Regression Explanation
 

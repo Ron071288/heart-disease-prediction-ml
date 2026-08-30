@@ -1,3 +1,11 @@
+"""Train, evaluate, compare, and save all three heart disease prediction models.
+
+This is the main group demonstration script. It applies one shared workflow to
+Logistic Regression, Random Forest, and K-Nearest Neighbors so their test
+metrics can be compared fairly. Individual training scripts remain available
+for each member to explain their own model in more detail.
+"""
+
 from __future__ import annotations
 
 import argparse
@@ -31,6 +39,8 @@ from heart_visuals import save_visualizations
 
 
 def parse_args() -> argparse.Namespace:
+    # Optional arguments let the group use another CSV or artifacts folder without
+    # changing the source code.
     parser = argparse.ArgumentParser(
         description="Train and compare all heart disease prediction models."
     )
@@ -51,6 +61,9 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+
+    # Step 1: Load the dataset and report its size, class balance, and exact
+    # duplicate count before models are trained.
     df = load_dataset(args.csv)
     analysis = dataset_analysis(df)
 
@@ -73,12 +86,15 @@ def main() -> None:
         ]
     )
 
+    # Step 2: Train every model using the same cleaned data, stratified 80/20
+    # train-test split, preprocessing pipeline, and evaluation metrics.
     models, metrics, _, _ = train_models(df)
     comparison = metrics_to_table(metrics)
 
     print_section(2, "Model Comparison")
     print_metric_table(comparison)
 
+    # Step 3: Print each model's setup, four main scores, and confusion matrix.
     print_section(3, "Model Details")
     model_setups = [
         (LOGISTIC_MODEL_NAME, FINAL_LOGISTIC_VARIANT),
@@ -92,14 +108,19 @@ def main() -> None:
         print_score_line(metrics[model_name])
         print_confusion_matrix(metrics[model_name])
 
+    # Step 4: Logistic Regression coefficients show direction and strength of
+    # individual and interaction-feature effects.
     print_section(4, "Top Logistic Regression Feature Effects")
     coefficients = logistic_regression_coefficients(models[LOGISTIC_MODEL_NAME])
     print_feature_effects(coefficients)
 
+    # Step 5: Random Forest uses feature importances rather than coefficients.
     print_section(5, "Random Forest Feature Importances")
     importances = random_forest_feature_importances(models[RANDOM_FOREST_MODEL_NAME])
     print_feature_importances(importances)
 
+    # Step 6: KNN predicts from distances to nearby records, so it has neither
+    # coefficients nor tree-style feature-importance values.
     print_section(6, "KNN Explanation Note")
     print_key_values(
         [
@@ -111,6 +132,8 @@ def main() -> None:
         ]
     )
 
+    # Step 7: Save trained models, metrics, and charts for the Streamlit app,
+    # report figures, and later demo sessions.
     output_dir = Path(args.output)
     save_artifacts(models, metrics, output_dir)
     save_visualizations(

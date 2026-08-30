@@ -1,3 +1,10 @@
+"""Streamlit user and developer views for the heart disease prediction project.
+
+Patient View accepts clinical inputs and predicts with the best evaluated model.
+Developer View is protected by a simple demo login and shows the dataset summary,
+model comparison, metrics, charts, and model explanations used in the report.
+"""
+
 from __future__ import annotations
 
 import pandas as pd
@@ -24,10 +31,13 @@ from heart_visuals import (
 )
 
 
+# Demo-only credentials for the developer analysis page. Change both values here
+# if the group wants to use different credentials for the presentation.
 DEVELOPER_USERNAME = "ron123"
 DEVELOPER_PASSWORD = "admin123"
 
 
+# Translate dataset column names into clear labels for the patient form.
 DISPLAY_LABELS = {
     "age": "Age",
     "sex": "Sex",
@@ -73,6 +83,7 @@ CATEGORY_DESCRIPTIONS = {
 }
 
 
+# Patient inputs use broad, sensible limits rather than the dataset's exact range.
 NUMERIC_INPUT_SETTINGS = {
     "age": {"min": 0, "max": 120, "step": 1},
     "trestbps": {"min": 40, "max": 260, "step": 1},
@@ -90,11 +101,14 @@ st.set_page_config(
 
 @st.cache_data(show_spinner=False)
 def get_dataset(csv_path: str | None) -> pd.DataFrame:
+    # Cache the dataset so Streamlit does not reload it after every interaction.
     return load_dataset(csv_path)
 
 
 @st.cache_resource(show_spinner=False)
 def get_trained_models(csv_path: str | None):
+    # Cache fitted models because training again is unnecessary when a user changes
+    # an input field or switches between the patient and developer pages.
     df = get_dataset(csv_path)
     return train_models(df)
 
@@ -114,12 +128,15 @@ def select_best_prediction_model(model_metrics: dict) -> str | None:
     if not model_metrics:
         return None
 
+    # Select by accuracy first. If accuracy is tied, use recall because missing a
+    # heart-disease case (a false negative) is especially important in this
+    # screening-style prototype. Precision and F1-score resolve any later ties.
     return max(
         model_metrics,
         key=lambda model_name: (
             model_metrics[model_name]["accuracy"],
-            model_metrics[model_name]["precision"],
             model_metrics[model_name]["recall"],
+            model_metrics[model_name]["precision"],
             model_metrics[model_name]["f1_score"],
         ),
     )
@@ -132,6 +149,8 @@ def model_display_name(model_name: str) -> str:
 
 
 def numeric_input(column_name: str, series: pd.Series):
+    # Use the dataset median as a realistic default while still allowing a user
+    # to enter any value within the broad validation range above.
     settings = NUMERIC_INPUT_SETTINGS.get(column_name, {})
     median_value = float(series.median())
 
@@ -155,6 +174,7 @@ def numeric_input(column_name: str, series: pd.Series):
 
 
 def user_input_form(df: pd.DataFrame) -> pd.DataFrame:
+    # Build one prediction-ready row with the same feature names as the training data.
     feature_df = df.drop(columns=["target"])
     user_values = {}
 
@@ -169,6 +189,8 @@ def user_input_form(df: pd.DataFrame) -> pd.DataFrame:
             if pd.api.types.is_numeric_dtype(series):
                 median_value = float(series.median())
 
+                # Low-cardinality numeric columns are coded categories (for example,
+                # sex or chest-pain type), so they are shown as readable selections.
                 if series.nunique() <= 10:
                     options = sorted(series.dropna().unique().tolist())
                     description_map = CATEGORY_DESCRIPTIONS.get(column_name, {})
@@ -190,6 +212,7 @@ def user_input_form(df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame([user_values])
 
 
+# Session state remembers whether the developer has logged in while the app runs.
 if "developer_authenticated" not in st.session_state:
     st.session_state.developer_authenticated = False
 if "show_developer_login" not in st.session_state:
@@ -198,7 +221,7 @@ if "show_developer_login" not in st.session_state:
 title_column, action_column = st.columns([4, 1])
 with title_column:
     st.title("Heart Disease Prediction")
-    st.caption("Interactive Machine Learning Model Prototype")
+    st.caption("Patient prediction view and developer analysis view.")
 with action_column:
     st.write("")
     st.write("")
@@ -209,7 +232,9 @@ with action_column:
             st.rerun()
     else:
         login_button_label = (
-            "Patient View" if st.session_state.show_developer_login else "Developer Login"
+            "Patient View"
+            if st.session_state.show_developer_login
+            else "Developer Login"
         )
         if st.button(login_button_label, width="stretch"):
             st.session_state.show_developer_login = not st.session_state.show_developer_login
@@ -221,9 +246,14 @@ if (
     not st.session_state.developer_authenticated
     and st.session_state.show_developer_login
 ):
+    # Login is a separate page: patient inputs are hidden until the user returns
+    # to Patient View, keeping the two audiences clearly separated.
     with st.container(border=True):
         st.subheader("Developer Login")
-        st.caption("Sign in to view dataset analysis, model comparison, and backend outputs.")
+        st.caption(
+            "Developer view shows dataset analysis, model comparison, evaluation charts, "
+            "and model explanation outputs."
+        )
         login_left, _login_right = st.columns([1, 2])
         with login_left:
             username = st.text_input("Username", key="developer_login_username")
@@ -245,6 +275,8 @@ if (
 csv_path = None
 
 try:
+    # Load the shared dataset once, then train/evaluate all models with the same
+    # cleaning, 80/20 split, preprocessing, and metrics for a fair comparison.
     df = get_dataset(csv_path)
     models, metrics, _, _ = get_trained_models(csv_path)
 except Exception as exc:
@@ -256,7 +288,12 @@ metric_table = metrics_to_table(metrics)
 best_model_name = select_best_prediction_model(metrics)
 
 if not st.session_state.developer_authenticated:
-    st.subheader("Patient Prediction")
+    # Patient View deliberately exposes only the selected best model's prediction,
+    # not the evaluation charts or internal model-comparison details.
+    st.subheader("Patient View")
+    st.caption(
+        "Enter patient details and view the heart disease prediction result."
+    )
     patient_input = user_input_form(df)
 
     if st.button("Predict Heart Disease", type="primary"):
@@ -280,10 +317,11 @@ if not st.session_state.developer_authenticated:
                 st.info(probability_text)
 
 else:
-    st.subheader("Developer Backend View")
+    # Developer View contains evidence for the report and presentation, including
+    # the model comparison and an explanation appropriate to each algorithm.
+    st.subheader("Developer View")
     st.caption(
-        "Backend view contains dataset analysis, model comparison, evaluation charts, "
-        "and model explanation outputs."
+        "Dataset summary, model comparison, evaluation metrics, charts, and model explanations."
     )
 
     st.subheader("Dataset Summary")

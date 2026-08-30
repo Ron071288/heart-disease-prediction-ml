@@ -113,7 +113,7 @@ def create_confusion_matrix_chart(confusion_matrix: list[list[int]]):
     return fig
 
 
-def create_feature_coefficient_chart(coefficients: pd.DataFrame, top_n: int = 10):
+def create_feature_coefficient_chart(coefficients: pd.DataFrame, top_n: int = 8):
     top_features = coefficients.head(top_n).copy()
     top_features = top_features.iloc[::-1]
     colors = [
@@ -121,11 +121,11 @@ def create_feature_coefficient_chart(coefficients: pd.DataFrame, top_n: int = 10
         for value in top_features["Coefficient"]
     ]
     labels = [
-        "\n".join(textwrap.wrap(label, width=46))
+        "\n".join(textwrap.wrap(label, width=38))
         for label in top_features["Feature"]
     ]
 
-    fig, ax = plt.subplots(figsize=(12, 7.2))
+    fig, ax = plt.subplots(figsize=(8.8, 5.4))
     bars = ax.barh(labels, top_features["Coefficient"], color=colors)
     ax.axvline(0, color="#111827", linewidth=1)
     ax.set_title(
